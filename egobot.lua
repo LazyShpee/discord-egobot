@@ -1,5 +1,6 @@
 local start_date = os.date()
 local discordia = require('discordia')
+local querystring = require("querystring")
 local client = discordia.Client()
 
 local md5 = require('md5')
@@ -167,6 +168,58 @@ cmds.pipe = function(m, c, a, cl)
    log('Pipe '..#input..' char(s) in `'..cmd..'`')
 
    backlog = output -- Save output to backlog (in case its too big)
+   if #output <= 1990 then
+      m:reply(code(output))
+   else
+      output = output:sub(1, 1980)
+      m:reply(code(output)..'`[SNIP]`')
+   end
+end
+
+--courtesy of Siapran
+local function printLine(...)
+   local ret = {}
+   for i = 1, select('#', ...) do
+      local arg = tostring(select(i, ...))
+      table.insert(ret, arg)
+   end
+   return table.concat(ret, '\t')
+end
+
+--courtesy of Siapran
+local function prettyLine(...)
+   local ret = {}
+   for i = 1, select('#', ...) do
+      local arg = pp.strip(pp.dump(select(i, ...)))
+      table.insert(ret, arg)
+   end
+   return table.concat(ret, '\t')
+end
+
+cmds.eval = function(m, c, a, cl)
+   if #a == 0 then return end
+   local tf
+
+   if     a:match("^```[^\n]-\n(.*)```$") then	tf = a:match("^```[^\n]-\n(.*)```$")
+   elseif a:match("^`(.*)`$") then		tf = a:match("^`(.*)`$")
+   else						tf = a
+   end
+
+   local output = {}
+   local sandbox = setmetatable({}, {__index = _G})
+   sandbox.msg = m
+   sandbox.client = cl
+   sandbox.backlog = backlog
+   sandbox.print = function(...) table.insert(output, printLine(...)) end
+   sandbox.p = function(...) table.insert(output, prettyLine(...)) end
+
+   local fn, syntax = load(tf, '{sandbox.'..c..'}', 't', sandbox)
+   if not fn then return m:reply(code(syntax)) end
+   local success, runtime = pcall(fn)
+   if not success then return m:reply(code(runtime)) end
+
+   if #output == 0 then return m:reply(code('Execution completed.')) end
+   output = table.concat(output, '\n')
    if #output <= 1990 then
       m:reply(code(output))
    else
