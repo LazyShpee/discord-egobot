@@ -1,9 +1,3 @@
-local colors = {
-   red    = '31',
-   yellow = '33',
-   green  = '32'
-}
-
 local ascii_emotes = {
    zoidberg = '(V) (°,,,,°) (V)',
    check = '✓',
@@ -29,10 +23,4 @@ local ascii_emotes = {
 
 return {
    prefix = '::',
-   error_levels = {
-      w = colors.yellow,
-      e = colors.red,
-      i = colors.green,
-      d = ''
-   }
 }, colors, ascii_emotes

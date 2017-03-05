@@ -1,24 +1,17 @@
 local start_date = os.date()
+local fs = require('fs')
 local discordia = require('discordia')
-local querystring = require("querystring")
-local pp = require('pretty-print')
 local client = discordia.Client()
-
-local md5 = require('md5')
 
 local config, colors, ascii_emotes = dofile('./config.lua')
 setmetatable(ascii_emotes or {}, {__index = function (t, k) return k end})
 setmetatable(colors or {}, {__index = function (t, k) return '' end})
 
+local log = require('logger')
+
 --[[
    Helper function
 ]]
-
-local function log(m, e)
-   e = e or ' '
-   local c = config.error_levels[e] and '\27['..config.error_levels[e]..'m' or ''
-   print(c..'['..e:upper()..']'..os.date('[%D %R] ')..m..'\27[0m')
-end
 
 local function code(c, l)
    return '```'..(l or '')..'\n'..c..'```'
@@ -39,9 +32,9 @@ local backlog = ''
      - client object
 ]]
 
-local cmds = setmetatable({}, {__index = function(t, k) return function(m, c, a, cl) log("Command "..c.." not found.", 'w') m:delete() end end })
 
 --[[
+local cmds = setmetatable({}, {__index = function(t, k) return function(m, c, a, cl) log("Command "..c.." not found.", 'w') m:delete() end end })
 
 cmds.quote = function(m, c, a, cl)
    local id, pattern, reply = {}, '.*', ''
@@ -179,69 +172,32 @@ cmds.pipe = function(m, c, a, cl)
    end
 end
 
---courtesy of Siapran
-local function printLine(...)
-   local ret = {}
-   for i = 1, select('#', ...) do
-      local arg = tostring(select(i, ...))
-      table.insert(ret, arg)
-   end
-   return table.concat(ret, '\t')
-end
-
---courtesy of Siapran
-local function prettyLine(...)
-   local ret = {}
-   for i = 1, select('#', ...) do
-      local arg = pp.strip(pp.dump(select(i, ...)))
-      table.insert(ret, arg)
-   end
-   return table.concat(ret, '\t')
-end
-
-cmds.eval = function(m, c, a, cl)
-   if #a == 0 then return end
-   local tf
-
-   if     a:match("^```[^\n]-\n(.*)```$") then	tf = a:match("^```[^\n]-\n(.*)```$")
-   elseif a:match("^`(.*)`$") then		tf = a:match("^`(.*)`$")
-   else						tf = a
-   end
-
-   local output = {}
-   local sandbox = setmetatable({}, {__index = _G})
-   sandbox.msg = m
-   sandbox.client = cl
-   sandbox.backlog = backlog
-   sandbox.print = function(...) table.insert(output, printLine(...)) end
-   sandbox.p = function(...) table.insert(output, prettyLine(...)) end
-
-   local fn, syntax = load(tf, '{sandbox.'..c..'}', 't', sandbox)
-   if not fn then return m:reply(code(syntax)) end
-   local success, runtime = pcall(fn)
-   if not success then return m:reply(code(runtime)) end
-
-   if #output == 0 then return m:reply(code('Execution completed.')) end
-   output = table.concat(output, '\n')
-   if #output <= 1990 then
-      m:reply(code(output))
-   else
-      output = output:sub(1, 1980)
-      m:reply(code(output)..'`[SNIP]`')
-   end
-end
-
-cmds.md5 = function(m, c, a, cl)
-   if #a == 0 then return end
-   m.content = '`md5("'..a..'") = '..md5.sumhexa(a)..'`'
-end
-
 ]]
 
+local commands = setmetatable({}, {__index = 
+function(t, k)
+   return {call =
+      function(msg, cmd)
+         log('Unknown command \''.. cmd ..'\'', log.Warning, 'core')
+      end, enabled = true}
+end})
 
-require()
-
-
+for _, fn in ipairs(fs.readdirSync('.')) do
+   if fn:match('^cmd_([^.]+)%.lua$') then
+      local cmds = {loadfile(fn)(require)}
+      for _, cmd in ipairs(cmds) do
+         cmd.filename = fn
+         cmd.enabled = true
+         if not commands[cmd.name].name then
+            commands[cmd.name] = cmd
+            log('Registered command \''.. cmd.name ..'\'', log.Info, 'core')
+         else
+            log('Command \''.. cmd.name ..'\' from '..fn..' is already registered', log.Warning, 'core')
+         end
+      end
+   end
+end
+   
 --[[
    Discordia events and main loop
 ]]
@@ -249,27 +205,27 @@ require()
 client:on('ready',
 	  function()
 	     args[2] = "Why the f**k would you print args ?" -- Courtesy of Siapran
-	     log(string.format('Logged in as %s#%d (%d)', client.user.username, client.user.discriminator, client.user.id), 'i')
+	     log(string.format('Logged in as %s#%d (%d)', client.user.username, client.user.discriminator, client.user.id), log.Info, 'core')
 	  end
 )
 
 client:on('messageCreate',
-	  function(message)
+	  function(msg)
 	     -- exit early if the author is the *NOT* same as the client
-	     if message.author ~= client.user then return end
-	     if not message.content:match('^'..config.prefix..'([^%s]+)%s*(.*)$') then return end
-	     local cmd, arg = message.content:match('^'..config.prefix..'([^%s]+)%s*(.*)$')
+	     if msg.author ~= client.user then return end
+             -- exit if message isn't a command'
+	     if not msg.content:match('^'..config.prefix..'([^%s]+)%s*(.*)$') then return end
+
+	     local cmd, arg = msg.content:match('^'..config.prefix..'(%S+)%s*(.*)$')
 	     
-	     local status, res = pcall(cmds[cmd], message, cmd, arg, client)
-	     if not status then log("Error occured while running command '"..cmd.."': "..tostring(res)) end
+             if commands[cmd].enabled then
+                local status, res = pcall(commands[cmd].call, msg, cmd, arg, client)
+                if not status then log("Error occured while running command '"..cmd.."': "..tostring(res), log.Error, 'core') end
+             end
 	  end
 )
 
-client:on('warning',
-	  function(warn)
-	     --l(warn, 'w')
-	  end
-)
+client:on('warning', function(warn) end)
 
-if not args[2] then print ('Usage: '..args[1]..' <DISCORD TOKEN>') os.exit() end
+if not args[2] then print('Usage: '..args[1]..' <DISCORD TOKEN>') os.exit() end
 client:run(args[2])
