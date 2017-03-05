@@ -7,21 +7,21 @@ local config, colors, ascii_emotes = dofile('./config.lua')
 setmetatable(ascii_emotes or {}, {__index = function (t, k) return k end})
 setmetatable(colors or {}, {__index = function (t, k) return '' end})
 
-local log = require('logger')
 
 --[[
    Helper function
 ]]
+local log = require('logger')
+local util = {}
+local shared = {}
 
-local function code(c, l)
+function util.code(c, l)
    return '```'..(l or '')..'\n'..c..'```'
 end
 
-local function printf(...)
+function util.printf(...)
    return print(string.format(...))
 end
-
-local backlog = ''
 
 --[[
    Command definition
@@ -135,43 +135,6 @@ cmds.f = function (m, c, a, cl)
    m.content = res
 end
 
-cmds.run = function(m, c, a, cl)
-   if #a == 0 then return end
-   m.content = config.prefix..c..' `'..a..'`'
-   local file = assert(io.popen(a, 'r'))
-   local output = file:read('*all')
-   file:close()
-   log('Ran `'..a..'`')
-
-   backlog = output -- Save output to backlog (in case its too big)
-   if #output <= 1990 then
-      m:reply(code(output))
-   else
-      output = output:sub(1, 1980)
-      m:reply(code(output)..'`[SNIP]`')
-   end
-end
-
-cmds.pipe = function(m, c, a, cl)
-   if #a == 0 then return end
-   local cmd, input = a:match('^`(.-)` ```[^\n]-\n(.*)```$')
-   local fp = io.popen(cmd.." > ./unique", "w")
-   fp:write(input)
-   fp:close()
-   fp = io.open("./unique", "r")
-   output = fp:read("*a")
-   fp:close()
-   log('Pipe '..#input..' char(s) in `'..cmd..'`')
-
-   backlog = output -- Save output to backlog (in case its too big)
-   if #output <= 1990 then
-      m:reply(code(output))
-   else
-      output = output:sub(1, 1980)
-      m:reply(code(output)..'`[SNIP]`')
-   end
-end
-
 ]]
 
 local commands = setmetatable({}, {__index = 
@@ -184,7 +147,7 @@ end})
 
 for _, fn in ipairs(fs.readdirSync('.')) do
    if fn:match('^cmd_([^.]+)%.lua$') then
-      local cmds = {loadfile(fn)(require)}
+      local cmds = {loadfile(fn)(require, util, shared, client)}
       for _, cmd in ipairs(cmds) do
          cmd.filename = fn
          cmd.enabled = true
@@ -219,7 +182,7 @@ client:on('messageCreate',
 	     local cmd, arg = msg.content:match('^'..config.prefix..'(%S+)%s*(.*)$')
 	     
              if commands[cmd].enabled then
-                local status, res = pcall(commands[cmd].call, msg, cmd, arg, client)
+                local status, res = pcall(commands[cmd].call, msg, cmd, arg, config)
                 if not status then log("Error occured while running command '"..cmd.."': "..tostring(res), log.Error, 'core') end
              end
 	  end
