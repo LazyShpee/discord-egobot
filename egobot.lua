@@ -1,6 +1,7 @@
 local start_date = os.date()
 local discordia = require('discordia')
 local querystring = require("querystring")
+local pp = require('pretty-print')
 local client = discordia.Client()
 
 local md5 = require('md5')
@@ -39,6 +40,8 @@ local backlog = ''
 ]]
 
 local cmds = setmetatable({}, {__index = function(t, k) return function(m, c, a, cl) log("Command "..c.." not found.", 'w') m:delete() end end })
+
+--[[
 
 cmds.quote = function(m, c, a, cl)
    local id, pattern, reply = {}, '.*', ''
@@ -158,7 +161,7 @@ end
 
 cmds.pipe = function(m, c, a, cl)
    if #a == 0 then return end
-   local cmd, input = a:match('^`([^`]-)` ```[^\n]-\n(.*)```$')
+   local cmd, input = a:match('^`(.-)` ```[^\n]-\n(.*)```$')
    local fp = io.popen(cmd.." > ./unique", "w")
    fp:write(input)
    fp:close()
@@ -232,6 +235,12 @@ cmds.md5 = function(m, c, a, cl)
    if #a == 0 then return end
    m.content = '`md5("'..a..'") = '..md5.sumhexa(a)..'`'
 end
+
+]]
+
+
+require()
+
 
 --[[
    Discordia events and main loop
