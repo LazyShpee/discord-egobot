@@ -23,14 +23,18 @@ function util.printf(...)
    return print(string.format(...))
 end
 
---[[
-   Command definition
-   The are invoked with the following arguments:
-     - message object
-     - command without prefix (useful for dynamic debugging)
-     - whole arguments as one string
-     - client object
-]]
+function util.eval_math(expr)
+   if not expr or #expr == 0 then return '' end -- Check for no arg or empty arg
+   local ft = "return (" .. expr .. ")" -- Make text function
+
+   local sb = setmetatable({}, {__index = math}) -- Create sandbox with math functions as its index (props to Siapran)
+   local f, syntax_error = load(ft, '{sandbox.math}', 't', sb) -- Load text function
+   if not f then return false, syntax_error end -- Test for syntax error and output it if any
+
+   local status, res = pcall(f) -- safe (catch) call function
+   if not status then return false, res end -- return with error if any
+   return true, tostring(res) -- return result
+end
 
 
 --[[
@@ -98,18 +102,6 @@ cmds.quote = function(m, c, a, cl)
 end
 
 -- Evaluates a math expression written in lua
-local function eval_math(expr)
-   if not expr or #expr == 0 then return '' end -- Check for no arg or empty arg
-   local ft = "return (" .. expr .. ")" -- Make text function
-
-   local sb = setmetatable({}, {__index = math}) -- Create sandbox with math functions as its index (props to Siapran)
-   local f, syntax_error = load(ft, '{sandbox.math}', 't', sb) -- Load text function
-   if not f then return false, syntax_error end -- Test for syntax error and output it if any
-
-   local status, res = pcall(f) -- safe (catch) call function
-   if not status then return false, res end -- return with error if any
-   return true, tostring(res) -- return result
-end
 
 cmds.math = function (m, c, a, cl)
    local status, res = eval_math(a)
