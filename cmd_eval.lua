@@ -20,6 +20,15 @@ local function prettyLine(...)
    return table.concat(ret, '\t')
 end
 
+local sandbox = {}
+
+local function reset()
+   sandbox = {}
+   setmetatable(sandbox, {__index = _G})
+end
+
+reset()
+
 local _EVAL = {
    name = 'eval',
    usage = '${prefix}${cmd} <lua code>|`<lua code>`|```<lua code>```',
@@ -34,19 +43,20 @@ local _EVAL = {
       end
 
       local output = {}
-      local sandbox = setmetatable({}, {__index = _G})
       sandbox.msg = m
-      sandbox.client = client
+      sandbox._CODE = true
+      sandbox.reset = reset
       sandbox.print = function(...) table.insert(output, printLine(...)) end
       sandbox.p = function(...) table.insert(output, prettyLine(...)) end
-      sandbox._CODE = true
-
+      sandbox.client = client
+      sandbox.util = util
+      
       local fn, syntax = load(tf, '{sandbox.'..c..'}', 't', sandbox)
       if not fn then return m:reply(util.code(syntax)) end
       local success, runtime = pcall(fn)
       if not success then return m:reply(util.code(runtime)) end
 
-      if #output == 0 then return m:reply(code('Execution completed.')) end
+      if #output == 0 then return m:reply(util.code('Execution completed.')) end
       output = table.concat(output, '\n')
       if #output <= 1990 then
 	 if (sandbox._CODE) then
