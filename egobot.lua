@@ -38,79 +38,6 @@ end
 
 
 --[[
-local cmds = setmetatable({}, {__index = function(t, k) return function(m, c, a, cl) log("Command "..c.." not found.", 'w') m:delete() end end })
-
-cmds.quote = function(m, c, a, cl)
-   local id, pattern, reply = {}, '.*', ''
-   a = a..' '
-   a:gsub('(%d+) ',
-   function(m)
-      table.insert(id, m)
-      return ''
-   end):gsub('/([^/]+)/ ',
-   function(m)
-      pattern = m
-      return ''
-   end):gsub('(.*) ',
-   function(m)
-      reply = m
-      return ''
-   end)
-
-   local channel = m.channel
-   if #id >= 2 then channel = client:getChannel("id", id[2]) end
-   if #id == 0 then return end -- Requires at least one id
-   if channel then
-      for msg in channel:getMessageHistoryAround({_id = id[1]}, 1) do
-	 if msg and msg.id == id[1] then
-
-	    local mq = table.concat({msg.content:match(pattern)}, ' ')
-	    if #mq == 0 then break end
-
-	    local resp = {embed = {
-			     description = mq,
-			     color = 6673764,
-			     author = {
-				name = msg.author.username,
-				icon_url = msg.author.avatarUrl
-			     },
-			     timestamp = os.date('!%Y-%m-%dT%H:%M:%S', msg.createdAt)
-			 }}
-	    
-	    -- Courtesy of Siapran
-	    if m.channel ~= channel then
-	       if m.guild ~= channel.guild then
-		  resp.embed.footer = {
-		     text = "On " .. channel.guild.name .. " | #" .. channel.name,
-		     icon_url = channel.guild.iconUrl,
-		  }
-	       else
-		  resp.embed.footer = {
-		     text = "On #" .. channel.name,
-		  }
-	       end
-	    end
-
-	    m:reply(resp)
-	    if reply and #reply > 0 then m:reply(reply) end
-	    log('Quoted '..msg.author.username..' ['..id[1]..'] '..pattern)
-	    break
-	 end
-      end
-   end
-   m:delete()
-end
-
--- Evaluates a math expression written in lua
-
-cmds.math = function (m, c, a, cl)
-   local status, res = eval_math(a)
-   if status then
-      m.content = code(a..'=\n'..tostring(res)) -- replace with result
-   else
-      m.content = code(tostring(res)) -- replace with error
-   end
-end
 
 cmds.f = function (m, c, a, cl)
    if not a or #a == 0 then return end
@@ -139,16 +66,22 @@ end})
 
 for _, fn in ipairs(fs.readdirSync('.')) do
    if fn:match('^cmd_([^.]+)%.lua$') then
-      local cmds = {loadfile(fn)(require, util, shared, client)}
-      for _, cmd in ipairs(cmds) do
-         cmd.filename = fn
-         cmd.enabled = true
-         if not commands[cmd.name].name then
-            commands[cmd.name] = cmd
-            log('Registered command \''.. cmd.name ..'\'', log.Info, 'core')
-         else
-            log('Command \''.. cmd.name ..'\' from '..fn..' is already registered', log.Warning, 'core')
-         end
+      local fcmd, err = loadfile(fn)
+      if not fcmd then
+	 log('Error loading '..err, log.Error, 'core')
+	 if config.exit_on_load_error then os.exit() end
+      else
+	 local cmds = {fcmd(require, util, shared, client)}
+	 for _, cmd in ipairs(cmds) do
+	    cmd.filename = fn
+	    cmd.enabled = true
+	    if not commands[cmd.name].name then
+	       commands[cmd.name] = cmd
+	       log('Registered command \''.. cmd.name ..'\'', log.Info, 'core')
+	    else
+	       log('Command \''.. cmd.name ..'\' from '..fn..' is already registered', log.Warning, 'core')
+	    end
+	 end
       end
    end
 end

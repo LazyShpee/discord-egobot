@@ -23,4 +23,5 @@ local ascii_emotes = {
 
 return {
    prefix = '::',
+   exit_on_load_error = true,
 }, colors, ascii_emotes

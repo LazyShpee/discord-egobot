@@ -39,7 +39,7 @@ local _EVAL = {
       sandbox.client = client
       sandbox.print = function(...) table.insert(output, printLine(...)) end
       sandbox.p = function(...) table.insert(output, prettyLine(...)) end
-      
+      sandbox._CODE = true
 
       local fn, syntax = load(tf, '{sandbox.'..c..'}', 't', sandbox)
       if not fn then return m:reply(util.code(syntax)) end
@@ -49,10 +49,18 @@ local _EVAL = {
       if #output == 0 then return m:reply(code('Execution completed.')) end
       output = table.concat(output, '\n')
       if #output <= 1990 then
-         m:reply(util.code(output))
+	 if (sandbox._CODE) then
+	    m:reply(util.code(output))
+	 else
+	    m:reply(output)
+	 end
       else
-         output = output:sub(1, 1980)
-         m:reply(util.code(output)..'`[SNIP]`')
+	 output = output:sub(1, 1980)
+	 if (sandbox._CODE) then
+	    m:reply(util.code(output)..'`[SNIP]`')
+	 else
+	    m:reply(output..'`[SNIP]`')
+	 end
       end
    end
 }

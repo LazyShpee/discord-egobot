@@ -1,0 +1,15 @@
+local _, util = ...
+local log = require 'logger'
+
+local _MATH = {
+   name = 'math',
+   call = function (m, c, a)
+      local status, res = util.eval_math(a)
+      log('Evaluated math `'..a..'`', nil, 'math')
+      m.content = util.code(a..'=\n'..tostring(res)) -- replace with result
+   end,
+   usage = '<mathematical expression>',
+   author = 'LazyShpee'
+}
+
+return _MATH
