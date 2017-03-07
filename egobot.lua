@@ -3,10 +3,7 @@ local fs = require('fs')
 local discordia = require('discordia')
 local client = discordia.Client()
 
-local config, colors, ascii_emotes = dofile('./config.lua')
-setmetatable(ascii_emotes or {}, {__index = function (t, k) return k end})
-setmetatable(colors or {}, {__index = function (t, k) return '' end})
-
+local config = dofile('./config.lua')
 
 --[[
    Helper function
@@ -35,26 +32,6 @@ function util.eval_math(expr)
    if not status then return false, res end -- return with error if any
    return true, tostring(res) -- return result
 end
-
-
---[[
-
-cmds.f = function (m, c, a, cl)
-   if not a or #a == 0 then return end
-   local res = a:gsub('{([^}]+)}',
-		      function(e)
-			 local s, r = eval_math(e)
-			 return s and e..'='..tostring(r) or e..'='..'ERR'
-		      end
-   ):gsub('<([^>]+)>',
-	  function (e)
-	     return ascii_emotes[e]
-	  end
-	 )
-   m.content = res
-end
-
-]]
 
 local commands = setmetatable({}, {__index = 
 function(t, k)
