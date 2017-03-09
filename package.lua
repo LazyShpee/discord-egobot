@@ -6,7 +6,9 @@
     license = "MIT",
     author = { name = "LazyShpee", email = "comemureravaud@gmail.com" },
     homepage = "https://github.com/discord-egobot",
-    dependencies = { "SinisterRectus/discordia" },
+    dependencies = {
+       "SinisterRectus/discordia"
+    },
     files = {
       "**.lua",
       "!test*"

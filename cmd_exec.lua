@@ -30,7 +30,7 @@ local _PIPE = {
    call = function(msg, cmd, arg, config)
       if #arg == 0 then return end
       local cmdl, input = arg:match('^`(.-)` ```[^\n]-\n(.*)```$')
-      local fp = io.popen(cmdl.." > ./unique", "w")
+      local fp = io.popen(cmdl.." &> ./unique", "w")
       fp:write(input)
       fp:close()
       fp = io.open("./unique", "r")

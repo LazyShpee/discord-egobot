@@ -2,8 +2,9 @@ local start_date = os.date()
 local fs = require('fs')
 local discordia = require('discordia')
 local client = discordia.Client()
-
+local weblit = require('weblit')
 local config = dofile('./config.lua')
+local token = args[2]
 
 --[[
    Helper function
@@ -93,4 +94,4 @@ client:on('messageCreate',
 client:on('warning', function(warn) end)
 
 if not args[2] then print('Usage: '..args[1]..' <DISCORD TOKEN>') os.exit() end
-client:run(args[2])
+client:run(token)
