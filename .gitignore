@@ -1,7 +1,9 @@
 # Egobot tmp files / personnal startup script
+egobot.db
 start.sh
 test.lua
 unique
+tmp*
 
 # Emacs temporary files
 *~

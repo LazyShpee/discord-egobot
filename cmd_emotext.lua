@@ -22,9 +22,9 @@ local spe = {
 
 local function rep(c)
    if spe[c] then
-      return ':'..spe[c]..':'
+      return ':'..spe[c]..': '
    elseif c:match('[a-zA-Z]') then
-      return ':regional_indicator_'..c:lower()..':'
+      return ':regional_indicator_'..c:lower()..': '
    else
       return c
    end

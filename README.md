@@ -6,7 +6,7 @@ This is a simple Discord selfbot written in Lua
 
 ### Prerequisites
 
-You will need to get [luvit](http://luvit.io/) and lit in order to run Egobot, recommended platform: Linux
+You will need to get [luvit](http://luvit.io/), lit and [sqlite3](https://sqlite.org/download.html) as a dynamic library in order to run Egobot, recommended platform: Linux
 
 ### Installing
 

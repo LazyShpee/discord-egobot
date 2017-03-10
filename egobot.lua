@@ -1,3 +1,5 @@
+local _require = loadstring("return require")() -- Get the real require back :<
+local sql = require("sqlite3")
 local start_date = os.date()
 local fs = require('fs')
 local discordia = require('discordia')
@@ -11,7 +13,7 @@ local token = args[2]
 ]]
 local log = require('logger')
 local util = {}
-local shared = {}
+local shared = {db = sql.open("egobot.db")}
 
 function util.code(c, l)
    return '```'..(l or '')..'\n'..c..'```'

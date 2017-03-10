@@ -1,4 +1,7 @@
+local req,_,shared,client  = ...
+local pp = req('pretty-print')
 local log = require('logger')
+local sql = req("sqlite3")
 
 local _QUOTE = {
    name = 'quote',
@@ -65,4 +68,48 @@ local _QUOTE = {
 
 }
 
-return _QUOTE
+local _RAWEMBED = {
+   name = 'rawembed',
+   call = function(m, c, a)
+      local mid, cid = a:match('([0-9]+) *([0-9]*)')
+      if #mid > 0 then
+	 local channel = m.channel
+	 client:getChannel("id", cid)
+	 for msg in channel:getMessageHistoryAround({_id = mid}, 1) do
+	    if msg.id == mid then
+	       m:reply('```lua\n'..pp.strip(pp.dump(msg.embed))..'\n'..pp.strip(pp.dump(msg.attachments))..'```')
+	       return
+	    end
+	 end
+      end
+   end
+}
+
+local db = shared.db
+
+db "CREATE TABLE IF NOT EXISTS saved_messages(gid NUM, cid NUM, mid NUM, uid NUM, uname TEXT, content TEXT, embed TEXT, attachment TEXT, created NUM)"
+
+local _SAVE = {
+   name = 'save',
+   call = function(m, c, a)
+      if #a == 0 then return end
+      for msg in m.channel:getMessageHistoryAround({_id = a}, 1) do
+	 if msg.id == a then
+	    local gid, cid, mid, uid, uname, content, embed, attachments, created = m.channel.guild.id, msg.channel.id, msg.id, msg.author.id, msg.author.username, msg.content, msg.embed, msg.attachments, msg.createdAt
+	    db("INSERT INTO saved_messages VALUES("..gid..", "..cid..", "..mid..", "..uid..", '"..uname:gsub("'", "''").."', '"..content:gsub("'", "''").."', \""..pp.strip(pp.dump(embed)).."\", \""..pp.strip(pp.dump(attachments)).."\", "..created..")")
+	    m.content = '`Saved '..a..'`'
+	    break
+	 end
+      end
+   end
+}
+
+local _LOAD = {
+   name = 'load',
+   call = function(m, c, a)
+      local t = db:exec("SELECT * FROM saved_messages WHERE uid = "..a)
+      print(pp.dump(t))
+   end
+}
+
+return _QUOTE, _RAWEMBED, _SAVE, _LOAD
