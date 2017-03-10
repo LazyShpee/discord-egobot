@@ -87,16 +87,17 @@ local _RAWEMBED = {
 
 local db = shared.db
 
-db "CREATE TABLE IF NOT EXISTS saved_messages(gid NUM, cid NUM, mid NUM, uid NUM, uname TEXT, content TEXT, embed TEXT, attachment TEXT, created NUM)"
+db "CREATE TABLE IF NOT EXISTS saved_messages(gid NUM, gim TEXT, cid NUM, mid NUM, uid NUM, gname TEXT, cname TEXT, uav TEXT, uname TEXT, content TEXT, embed TEXT, attachment TEXT, created NUM, tags TEXT)"
 
 local _SAVE = {
    name = 'save',
    call = function(m, c, a)
       if #a == 0 then return end
-      for msg in m.channel:getMessageHistoryAround({_id = a}, 1) do
-	 if msg.id == a then
-	    local gid, cid, mid, uid, uname, content, embed, attachments, created = m.channel.guild.id, msg.channel.id, msg.id, msg.author.id, msg.author.username, msg.content, msg.embed, msg.attachments, msg.createdAt
-	    db("INSERT INTO saved_messages VALUES("..gid..", "..cid..", "..mid..", "..uid..", '"..uname:gsub("'", "''").."', '"..content:gsub("'", "''").."', \""..pp.strip(pp.dump(embed)).."\", \""..pp.strip(pp.dump(attachments)).."\", "..created..")")
+      local id, tags = a:match("^([0-9]+) *(.*)$")
+      for msg in m.channel:getMessageHistoryAround({_id = id}, 1) do
+	 if msg.id == id then
+	    local gid, gim, cid, mid, uid, gname, cname, uav, uname, content, embed, attachments, created = m.channel.guild.id, msg.channel.guild.iconUrl, msg.channel.id, msg.id, msg.author.id, msg.channel.guild.name, msg.channel.name, msg.author.avatarUrl, msg.author.username, msg.content, msg.embed, msg.attachments, msg.createdAt
+	    db("INSERT INTO saved_messages VALUES("..gid..", '"..gim:gsub("'", "''").."', "..cid..", "..mid..", "..uid..", '"..gname:gsub("'", "''").."', '"..cname:gsub("'", "''").."', '"..uav:gsub("'", "''").."', '"..uname:gsub("'", "''").."', '"..content:gsub("'", "''").."', \""..pp.strip(pp.dump(embed)).."\", \""..pp.strip(pp.dump(attachments)).."\", "..created..", '"..tags:gsub("'", "''").."')")
 	    m.content = '`Saved '..a..'`'
 	    break
 	 end
@@ -107,8 +108,31 @@ local _SAVE = {
 local _LOAD = {
    name = 'load',
    call = function(m, c, a)
-      local t = db:exec("SELECT * FROM saved_messages WHERE uid = "..a)
-      print(pp.dump(t))
+      local t = db:exec("SELECT * FROM saved_messages WHERE "..a..";")
+      if #t > 0 then
+	 local r = 1
+	 local res = {
+	    embed = {
+	       description = t.content[r],
+	       color = 11574062,
+	       timestamp =  os.date('!%Y-%m-%dT%H:%M:%S', t.created[r]),
+	       author = {
+		  name = t.uname[r],
+		  icon_url = t.uav[r]
+	       },
+	       footer = {
+		  icon_url = t.gim[r],
+		  text = "On "..t.gname[r].." | #"..t.cname[r]
+	       }
+	    }
+	 }
+	 if t.attachment[r] ~= "nil" then
+	    local attachment = loadstring('return ('..t.attachment[r]..')')()
+	    res.embed.image = {url = attachment[1].url}
+	 end
+	 m:reply(res)
+      end
+      m:delete()
    end
 }
 
