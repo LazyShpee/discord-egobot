@@ -9,7 +9,8 @@ local _MATH = {
       m.content = util.code(a..'=\n'..tostring(res)) -- replace with result
    end,
    usage = '<mathematical expression>',
-   author = 'LazyShpee'
+   author = 'LazyShpee',
+   description = 'Evaluate a Lua mathematical expression (no need to use prefix math. )'
 }
 
 return _MATH

@@ -60,7 +60,8 @@ local _FORMAT = {
 	    )
       m.content = res
    end,
-   author = 'LazyShpee'
+   author = 'LazyShpee',
+   usage = '<message to format>'
 }
 
 local _FULLWIDTH = {
@@ -68,7 +69,10 @@ local _FULLWIDTH = {
    call = function(m, c, a)
       m:reply(to_full(a))
       m:delete()
-   end
+   end,
+   usage = '<text>',
+   description = 'Converts ascii characters in text to fullwidth text',
+   author = 'LazyShpee'
 }
 
 return _FORMAT, _FULLWIDTH

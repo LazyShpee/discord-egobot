@@ -20,7 +20,7 @@ local _RUN = {
          msg:reply(util.code(output)..'`[SNIP]`')
       end
    end,
-   usage = '${prefix}${cmd} <command line>',
+   usage = '<command line>',
    description = 'This executes a command line',
    author = 'LazyShpee'
 }
@@ -45,7 +45,7 @@ local _PIPE = {
          msg:reply(util.code(output)..'`[SNIP]`')
       end
    end,
-   usage = '${prefix}${cmd} `command line` ```input data```',
+   usage = '`command line` ```input data```',
    description = 'This execute a command and feeds it some input data',
    author = 'LazyShpee'
 }

@@ -31,7 +31,16 @@ reset()
 
 local _EVAL = {
    name = 'eval',
-   usage = '${prefix}${cmd} <lua code>|`<lua code>`|```<lua code>```',
+   usage = '<lua code>|`<lua code>`|```<lua code>```',
+   description = [[Evalutes a piece of Lua code in a semi persistent sandbox
+Sandbox Variable:
+  - _C, true, show ouput in markdown block
+  - _S, false, hide 'Execution completed.' when done and no output
+  - _O, true, show the print output
+  - _D, false, delete command message
+  - reset(), resets the sandbox global variables
+  - msg, the emmited command message object
+  - client, egobot client object]],
    author = 'LazyShpee',
    call = function(m, c, a)
       if #a == 0 then return end
@@ -68,7 +77,7 @@ local _EVAL = {
 	    else
 	       m:reply(output)
 	    end
-	 elseif not sandbox._S then
+	 else
 	    output = output:sub(1, 1980)
 	    if sandbox._C then
 	       m:reply(util.code(output)..'`[SNIP]`')

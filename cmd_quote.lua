@@ -64,8 +64,9 @@ local _QUOTE = {
 	 end
       end
       m:delete()
-   end
-
+   end,
+   author = 'LazyShpee',
+   syntax = '<message id> [channel id] /[pattern to apply to quote]/ [answer to quote]'
 }
 
 local _RAWEMBED = {
@@ -74,7 +75,10 @@ local _RAWEMBED = {
       local mid, cid = a:match('([0-9]+) *([0-9]*)')
       if #mid > 0 then
 	 local channel = m.channel
-	 client:getChannel("id", cid)
+	 if #cid > 0 then
+	    channel = client:getChannel("id", cid)
+	 end
+	 if not channel then return end
 	 for msg in channel:getMessageHistoryAround({_id = mid}, 1) do
 	    if msg.id == mid then
 	       m:reply('```lua\n'..pp.strip(pp.dump(msg.embed))..'\n'..pp.strip(pp.dump(msg.attachments))..'```')
@@ -82,7 +86,10 @@ local _RAWEMBED = {
 	    end
 	 end
       end
-   end
+   end,
+   usage = '<message id> [channel id]',
+   description = 'Shows raw embed and attachements of a message for debug purposes',
+   author = 'LazyShpee'
 }
 
 local db = shared.db
@@ -110,14 +117,15 @@ local _LOAD = {
    call = function(m, c, a)
       local t = db:exec("SELECT * FROM saved_messages WHERE "..a..";")
       if #t > 0 then
-	 local r = 1
+	 local r = math.random(1,#t.mid)
 	 local res = {
 	    embed = {
 	       description = t.content[r],
-	       color = 11574062,
+	       color = 3492471,
 	       timestamp =  os.date('!%Y-%m-%dT%H:%M:%S', t.created[r]),
 	       author = {
 		  name = t.uname[r],
+		  url = t.mid[r],
 		  icon_url = t.uav[r]
 	       },
 	       footer = {

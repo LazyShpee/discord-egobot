@@ -37,7 +37,9 @@ local _EM = {
       m:delete()
       m:reply(rep)
    end,
-   author = 'LazyShpee'
+   author = 'LazyShpee',
+   usage = '<text>',
+   description = 'Transforms text into regional indicator and various symbol emote'
 }
 
 return _EM

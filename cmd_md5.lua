@@ -8,7 +8,7 @@ local _MD5 = {
       if #arg == 0 then return end
       msg.content = '`md5("'..arg..'") = '..(md5.sumhexa(arg))..'`'
    end,
-   usage = '${prefix}${cmd} <string to hash>',
+   usage = '<string to hash>',
    description = 'This is a simple MD5 hashing command',
    author = 'LazyShpee'
 }

@@ -23,7 +23,10 @@ local _INFO = {
       end
       msg:delete()
       msg:reply({embed = answer})
-   end
+   end,
+   usage = '',
+   description = 'Answers with egobot info',
+   author = 'LazyShpee'
 }
 
 return _INFO
