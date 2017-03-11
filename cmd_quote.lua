@@ -116,8 +116,8 @@ local _LOAD = {
    name = 'load',
    call = function(m, c, a)
       local t = db:exec("SELECT * FROM saved_messages WHERE "..a..";")
-      if #t > 0 then
-	 local r = math.random(1,#t.mid)
+      if t and #t > 0 then
+	 local r = math.random(1, #t.mid)
 	 local res = {
 	    embed = {
 	       description = t.content[r],
@@ -125,7 +125,7 @@ local _LOAD = {
 	       timestamp =  os.date('!%Y-%m-%dT%H:%M:%S', t.created[r]),
 	       author = {
 		  name = t.uname[r],
-		  url = t.mid[r],
+		  url = "http://"..tostring(t.mid[r])..".mid",
 		  icon_url = t.uav[r]
 	       },
 	       footer = {
@@ -134,8 +134,8 @@ local _LOAD = {
 	       }
 	    }
 	 }
-	 if t.attachment[r] ~= "nil" then
-	    local attachment = loadstring('return ('..t.attachment[r]..')')()
+	 local attachment = loadstring('return ('..t.attachment[r]..')')()
+	 if attachment then
 	    res.embed.image = {url = attachment[1].url}
 	 end
 	 m:reply(res)
