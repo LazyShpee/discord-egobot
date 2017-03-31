@@ -25,29 +25,42 @@ local _RUN = {
    author = 'LazyShpee'
 }
 
-local _PIPE = {
-   name = 'pipe',
+-- local _PIPE = {
+--    name = 'pipe',
+--    call = function(msg, cmd, arg, config)
+--       if #arg == 0 then return end
+--       local cmdl, input = arg:match('^`(.-)` ```[^\n]-\n(.*)```$')
+--       -- local fd = io.open("./tmp_pipe", "w")
+--       -- fd:write(input)
+--       -- fd:close()
+--       -- local fp = io.popen("cat ./tmp_pipe | "..cmdl, "r")
+--       -- output = fp:read("*all")
+--       -- fp:close()
+--       local output = splat_popen(input, cmdl)
+--       log('Piped '..#input..' char(s) in `'..cmdl..'`')
+--       if #output <= 1990 then
+--          msg:reply(util.code(output))
+--       else
+--          output = output:sub(1, 1980)
+--          msg:reply(util.code(output)..'`[SNIP]`')
+--       end
+--    end,
+--    usage = '`command line` ```input data```',
+--    description = 'This execute a command and feeds it some input data',
+--    author = 'LazyShpee'
+-- }
+
+local _STORE = {
+   name = 'sto',
    call = function(msg, cmd, arg, config)
       if #arg == 0 then return end
-      local cmdl, input = arg:match('^`(.-)` ```[^\n]-\n(.*)```$')
-      local fd = io.open("./tmp_pipe", "w")
+      local name, input = arg:match('^(.-) ?```[^\n]-\n(.*)```$')
+      if #name == 0 then name = "default" end
+      local fd = io.open("./sto_"..name, "w")
       fd:write(input)
       fd:close()
-      local fp = io.popen("cat ./tmp_pipe | "..cmdl, "r")
-      output = fp:read("*a")
-      fp:close()
-      log('Piped '..#input..' char(s) in `'..cmdl..'`')
-
-      if #output <= 1990 then
-         msg:reply(util.code(output))
-      else
-         output = output:sub(1, 1980)
-         msg:reply(util.code(output)..'`[SNIP]`')
-      end
    end,
-   usage = '`command line` ```input data```',
-   description = 'This execute a command and feeds it some input data',
-   author = 'LazyShpee'
+   usage = '[name] ```data```'
 }
 
-return _RUN, _PIPE
+return _RUN, _STORE

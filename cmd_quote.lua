@@ -3,6 +3,32 @@ local pp = req('pretty-print')
 local log = require('logger')
 local sql = req("sqlite3")
 
+local _VQUOTE = {
+   name = 'vquote',
+   call = function(m, c, a)
+      local user, text, footer = a:match('^([^|]+)|([^|]+)|?(.-)$')
+      if not user or #user == 0 or not text or #text == 0 then return end
+      local ans = {
+	 embed = {
+	    description = text,
+	    color = 7493255,
+	    author = {
+	       name = user
+	    }
+	 }
+      }
+      if #footer > 0 then
+	 ans.embed.footer = {
+	    text = footer
+	 }
+      else
+	 ans.embed.timestamp = os.date('!%Y-%m-%dT%H:%M:%S')
+      end
+      m:reply(ans)
+      m:delete()
+   end
+}
+
 local _QUOTE = {
    name = 'quote',
    call = function(m, c, a)
@@ -144,4 +170,4 @@ local _LOAD = {
    end
 }
 
-return _QUOTE, _RAWEMBED, _SAVE, _LOAD
+return _QUOTE, _RAWEMBED, _SAVE, _LOAD, _VQUOTE

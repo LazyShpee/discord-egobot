@@ -1,4 +1,5 @@
 # Egobot tmp files / personnal startup script
+sto_*
 egobot.db
 start.sh
 test.lua
