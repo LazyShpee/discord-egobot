@@ -29,12 +29,14 @@ End with an example of getting some data out of the system or using it for a lit
 To run Egobot, you will need to get your Discord token (google is your friend, methods may vary)
 
 ```
-luvit egobot.lua DISCORD_TOKEN
+luvit egobot.lua DISCORD_TOKEN [WEBUI PASSWORD]
 ```
+
+To launch with Web UI, enter a WEBUI PASSWORD and access the interface with http://localhost:1234/index.html?WEBUI PASSWORD
 
 ## Features
 
-TODO
+* WebUI (Indev, but stable and usable)
 
 ## ToDo / Planned (?) Features
 
