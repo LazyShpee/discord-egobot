@@ -44,6 +44,10 @@ local function to_full(s)
    return r
 end
 
+local e = {}
+for i in pairs(ascii_emotes) do table.insert(e, i) end
+e = table.concat(e, ', ')
+
 local _FORMAT = {
    name = 'f',
    call = function (m, c, a)
@@ -61,7 +65,12 @@ local _FORMAT = {
       m.content = res
    end,
    author = 'LazyShpee',
-   usage = '<message to format>'
+   usage = '<message to format>',
+   display_name = 'Formatter',
+   description = [[Adds inline ascii emotes and math to message
+Use `{expr}` for math and `<emote name>` for emotes
+Available emotes are:
+]]..e
 }
 
 local _FULLWIDTH = {
@@ -71,7 +80,7 @@ local _FULLWIDTH = {
       m:delete()
    end,
    usage = '<text>',
-   description = 'Converts ascii characters in text to fullwidth text',
+   description = [[Converts ascii characters in text to fullwidth (aethetics) text]],
    author = 'LazyShpee'
 }
 

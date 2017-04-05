@@ -60,7 +60,12 @@ local _STORE = {
       fd:write(input)
       fd:close()
    end,
-   usage = '[name] ```data```'
+   usage = '[name] ```data```',
+   display_name = 'Store Data',
+   author = 'LazyShpee',
+   description = [[Stores `data` to file `sto_$name` ($name defaults to 'default')
+Useful to be use with the run module (ie: store a perl script and execute it)
+]]
 }
 
 return _RUN, _STORE

@@ -31,17 +31,6 @@ reset()
 
 local _EVAL = {
    name = 'eval',
-   usage = '<lua code>|`<lua code>`|```<lua code>```',
-   description = [[Evalutes a piece of Lua code in a semi persistent sandbox
-Sandbox Variable:
-  - _C, true, show ouput in markdown block
-  - _S, false, hide 'Execution completed.' when done and no output
-  - _O, true, show the print output
-  - _D, false, delete command message
-  - reset(), resets the sandbox global variables
-  - msg, the emmited command message object
-  - client, egobot client object]],
-   author = 'LazyShpee',
    call = function(m, c, a)
       if #a == 0 then return end
       local tf
@@ -89,7 +78,19 @@ Sandbox Variable:
       if sandbox._D then
 	 m:delete()
       end
-   end
+   end,
+   usage = '<lua code>|`<lua code>`|```<lua code>```',
+   description = [[Evalutes a piece of Lua code in a semi persistent sandbox
+Sandbox Variable:
+  - _C, true, show ouput in markdown block
+  - _S, false, hide 'Execution completed.' when done and no output
+  - _O, true, show the print output
+  - _D, false, delete command message
+  - reset(), resets the sandbox global variables
+  - msg, the emmited command message object
+  - client, egobot client object]],
+   author = 'LazyShpee',
+   display_name = 'Lua Eval'
 }
 
 return _EVAL

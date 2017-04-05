@@ -39,7 +39,8 @@ local _EM = {
    end,
    author = 'LazyShpee',
    usage = '<text>',
-   description = 'Transforms text into regional indicator and various symbol emote'
+   description = 'Transforms text into regional indicator and various symbol emote',
+   display_name = 'Emote Text'
 }
 
 return _EM

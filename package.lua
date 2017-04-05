@@ -7,7 +7,8 @@
     author = { name = "LazyShpee", email = "comemureravaud@gmail.com" },
     homepage = "https://github.com/discord-egobot",
     dependencies = {
-       "SinisterRectus/discordia"
+       "SinisterRectus/discordia",
+       "SinisterRectus/sqlite3"
     },
     files = {
       "**.lua",

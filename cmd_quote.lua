@@ -26,7 +26,12 @@ local _VQUOTE = {
       end
       m:reply(ans)
       m:delete()
-   end
+   end,
+   display_name = 'Quoter',
+   usage = '<name>|<text>[| footer text]',
+   author = 'LazyShpee',
+   description = [[This makes an embed quote like reply
+If footer is empty, uses the date and time]]
 }
 
 local _QUOTE = {
@@ -92,7 +97,11 @@ local _QUOTE = {
       m:delete()
    end,
    author = 'LazyShpee',
-   syntax = '<message id> [channel id] /[pattern to apply to quote]/ [answer to quote]'
+   syntax = '<message id> [channel id] /[pattern to apply to quote]/ [answer to quote]',
+   display_name = 'Discord Quoter',
+   description = [[Quotes `message id` as an embed reply
+Channel id is only needed is the message isn't in the channel
+Answer to quote is an extra message sent right after the quote, as an answer]]
 }
 
 local _RAWEMBED = {
@@ -115,7 +124,8 @@ local _RAWEMBED = {
    end,
    usage = '<message id> [channel id]',
    description = 'Shows raw embed and attachements of a message for debug purposes',
-   author = 'LazyShpee'
+   author = 'LazyShpee',
+   display_name = 'raw view'
 }
 
 local db = shared.db

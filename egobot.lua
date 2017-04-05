@@ -1,12 +1,14 @@
-local _require = loadstring("return require")() -- Get the real require back :<
-local sql = require("sqlite3")
-local start_date = os.date()
+local _require = loadstring('return require')() -- Get the real require back :<
+local sql = require('sqlite3')
 local fs = require('fs')
 local discordia = require('discordia')
 local client = discordia.Client()
-local weblit = require('weblit')
+local http = require('http')
+local fs = require('fs')
 local config = dofile('./config.lua')
-local token = args[2]
+
+local token, webpass = args[2], args[3]
+local start_date = os.date()
 
 --[[
    Helper function
@@ -14,6 +16,14 @@ local token = args[2]
 local log = require('logger')
 local util = {}
 local shared = {db = sql.open("egobot.db")}
+local db = shared.db
+
+function string:split(sep)
+   local sep, fields = sep or ":", {}
+   local pattern = string.format("([^%s]+)", sep)
+   self:gsub(pattern, function(c) fields[#fields+1] = c end)
+   return fields
+end
 
 function util.code(c, l)
    return '```'..(l or '')..'\n'..c..'```'
@@ -36,6 +46,12 @@ function util.eval_math(expr)
    return true, tostring(res) -- return result
 end
 
+--[[
+   Module loader
+]]
+
+db "CREATE TABLE IF NOT EXISTS modules(name TEXT, state TEXT)"
+
 local commands = setmetatable({}, {__index = 
 function(t, k)
    return {call =
@@ -53,11 +69,18 @@ for _, fn in ipairs(fs.readdirSync('.')) do
       else
 	 local cmds = {fcmd(require, util, shared, client)}
 	 for _, cmd in ipairs(cmds) do
-	    cmd.filename = fn
-	    cmd.enabled = true
 	    if not commands[cmd.name].name then
 	       commands[cmd.name] = cmd
 	       log('Registered command \''.. cmd.name ..'\'', log.Info, 'core')
+	       cmd.filename = fn
+
+	       local r = db:exec('SELECT * FROM modules WHERE name = "'..(cmd.name)..'"')
+	       if not r or #r == 0 then
+		  cmd.enabled = true
+		  db('INSERT INTO modules VALUES("'.. cmd.name ..'", "true")')
+	       else
+		  cmd.enabled = (r.state[1] == 'true')
+	       end
 	    else
 	       log('Command \''.. cmd.name ..'\' from '..fn..' is already registered', log.Warning, 'core')
 	    end
@@ -65,7 +88,9 @@ for _, fn in ipairs(fs.readdirSync('.')) do
       end
    end
 end
-   
+
+
+
 --[[
    Discordia events and main loop
 ]]
@@ -73,6 +98,7 @@ end
 client:on('ready',
 	  function()
 	     args[2] = "Why the f**k would you print args ?" -- Courtesy of Siapran
+	     args[3] = nil
 	     log(string.format('Logged in as %s#%d (%d)', client.user.username, client.user.discriminator, client.user.id), log.Info, 'core')
 	  end
 )
@@ -97,3 +123,139 @@ client:on('warning', function(warn) end)
 
 if not args[2] then print('Usage: '..args[1]..' <DISCORD TOKEN>') os.exit() end
 client:run(token)
+
+--[[
+   Web UI
+]]
+
+if webpass and #webpass > 0 then
+   local mimes = require('mime_types')
+   local http = require('http')
+   local url = require('url')
+   local fs = require('fs')
+   local Response = require('http').ServerResponse
+   local json = require('json')
+
+   function getType(path)
+      return mimes[path:lower():match("[^.]*$")] or mimes.default
+   end
+
+   -- Monkey patch in a helper
+   function Response:notFound(reason)
+      self:writeHead(404,
+		     {
+			["Content-Type"] = "text/plain",
+			["Content-Length"] = #reason
+		     }
+      )
+      self:write(reason)
+   end
+
+   -- Monkey patch in another
+   function Response:error(reason)
+      self:writeHead(500,
+		     {
+			["Content-Type"] = "text/plain",
+			["Content-Length"] = #reason
+		     }
+      )
+      self:write(reason)
+   end
+
+   function Response:json(tbl)
+      local res = json.encode(tbl)
+      self:writeHead(200,
+		     {
+			["Content-Type"] = "application/json",
+			["Content-Length"] = #res
+		     }
+      )
+      self:write(res)
+   end
+   
+   local root = 'www'
+   http.createServer(function(req, res)
+	 req.uri = url.parse(req.url)
+	 local path = root .. req.uri.pathname
+	 local paths = req.uri.pathname:split('/')
+	 local chunks = {}
+	 local length = 0
+
+	 req:on('data',
+		function (chunk, len)
+		   length = length + 1
+		   chunks[length] = chunk
+		end
+	 )
+
+	 req:on('end',
+		function ()
+		   p('path',path)
+		   if paths[1] == 'api' then
+		      local data = json.decode(table.concat(chunks, ''))
+		      p(data, table.concat(chunks, ''))
+		      if not data or not data.pass or data.pass ~= webpass then return res:error('Forbidden') end
+		      local ret = { status = 'KO' }
+		      -- API SECTION
+
+		      if paths[2] then
+			 if paths[2] == 'modules' then
+			    if not paths[3] then
+			       ret.data = {}
+			       for name, cmd in pairs(commands) do
+				  table.insert(ret.data,
+					       { name = name,
+						 display_name = cmd.display_name or name,
+						 enabled = cmd.enabled })
+			       end
+			       ret.status = 'OK'
+			    elseif paths[3] and commands[paths[3]] then
+			       local cmd = commands[paths[3]]
+			       if type(data.enabled) == 'boolean' then
+				  cmd.enabled = data.enabled
+				  db('UPDATE modules SET state = "'..tostring(cmd.enabled)..'" WHERE name = "'.. paths[3] .. '"')
+				  print(paths[3]..' -> '..(cmd.enabled and 'en' or 'dis')..'abled')
+			       else
+				  ret.data = {
+				     name = cmd.name,
+				     usage = cmd.usage,
+				     description = cmd.description,
+				     author = cmd.author,
+				     display_name = cmd.display_name or cmd.name,
+				     prefix = config.prefix
+				  }
+			       end
+			       ret.status = 'OK'
+			    end
+			 end
+		      end
+		      
+		      -- API SECTION END
+		      res:json(ret)
+		   else
+		      fs.stat(path,
+			      function (err, stat)
+				 if err then
+				    if err.code == "ENOENT" then
+				       return res:notFound(err.message .. "\n")
+				    end
+				    return res:error((err.message or tostring(err)) .. "\n")
+				 end
+				 if stat.type ~= 'file'    then
+				    return res:notFound("Requested url is not a file\n")
+				 end
+				 
+				 res:writeHead(200, {
+						  ["Content-Type"] = getType(path),
+						  ["Content-Length"] = stat.size
+				 })
+				 fs.createReadStream(path):pipe(res)
+			      end
+		      )
+		   end
+		end
+	 )
+   end):listen(1234)
+   print('Listening on port 1234')
+   
+end
