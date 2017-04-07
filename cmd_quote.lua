@@ -97,7 +97,7 @@ local _QUOTE = {
       m:delete()
    end,
    author = 'LazyShpee',
-   syntax = '<message id> [channel id] /[pattern to apply to quote]/ [answer to quote]',
+   usage = '<message id> [channel id] /[pattern to apply to quote]/ [answer to quote]',
    display_name = 'Discord Quoter',
    description = [[Quotes `message id` as an embed reply
 Channel id is only needed is the message isn't in the channel
