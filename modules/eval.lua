@@ -1,5 +1,5 @@
 local req, util, _, client = ... -- Getting the luvit custom require
-local log = require('logger')
+local log = require('utils.logger')
 local pp = req('pretty-print')
 
 --courtesy of Siapran

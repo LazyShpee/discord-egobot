@@ -13,7 +13,7 @@ local start_date = os.date()
 --[[
    Helper function
 ]]
-local log = require('logger')
+local log = require('utils.logger')
 local util = {}
 local shared = {db = sql.open("egobot.db")}
 local db = shared.db
@@ -60,18 +60,23 @@ end
    Module loader
 ]]
 
+local commands
+
 db "CREATE TABLE IF NOT EXISTS modules(name TEXT, state TEXT)"
 db "CREATE TABLE IF NOT EXISTS modules_config(module TEXT, name TEXT, type TEXT, value TEXT)"
 
 function getValue(val, typename)
   val = tostring(val)
-  if typename:mmatch("toggle|bool|boolean") then
+  if typename:mmatch("toggle|boolean") then
     return val == "true"
-  elseif typename:mmatch("string|str") then
+  elseif typename:mmatch("string|multiline") then
     return tostring(val)
   elseif typename:mmatch("int|number") then
     return tonumber(val)
+  elseif typename:mmatch("color") then
+    return val:gsub("^#", '')
   end
+  return val
 end
 
 function getModuleOptions(name)
@@ -86,7 +91,7 @@ function getModuleOptions(name)
   return opt
 end
 
-local commands = setmetatable({}, {__index = 
+commands = setmetatable({}, {__index = 
 function(t, k)
   return {call =
     function(msg, cmd)
@@ -94,9 +99,11 @@ function(t, k)
     end, enabled = true}
 end})
 
-for _, fn in ipairs(fs.readdirSync('.')) do
-  if fn:match('^cmd_([^.]+)%.lua$') then
-    local fcmd, err = loadfile(fn)
+
+local modules_dir = 'modules/'
+for _, fn in ipairs(fs.readdirSync(modules_dir)) do
+  if fn:match('^([^.]+)%.lua$') then
+    local fcmd, err = loadfile(modules_dir..fn)
     if not fcmd then
       log('Error loading '..err, log.Error, 'core')
       if config.exit_on_load_error then os.exit() end
@@ -146,7 +153,7 @@ client:on('ready',
     log(string.format('Logged in as %s#%d (%d)', client.user.username, client.user.discriminator, client.user.id), log.Info, 'core')
     if http_server then
       http_server:listen(1234)
-      print('Listening on port 1234')
+      log('Listening on port 1234')
     end
   end)
 
@@ -175,7 +182,7 @@ client:run(token)
 ]]
 
 if webpass and #webpass > 0 then
-  local mimes = require('mime_types')
+  local mimes = require('utils.mime_types')
   local http = require('http')
   local url = require('url')
   local fs = require('fs')

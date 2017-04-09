@@ -1,4 +1,4 @@
-local log = require('logger')
+local log = require('utils.logger')
 
 -- Inspired by Siapran
 local _LATEX = {

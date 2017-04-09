@@ -1,5 +1,5 @@
-local log = require('logger')
-local md5 = require('md5')
+local log = require('utils.logger')
+local md5 = require('utils.md5')
 
 local _MD5 = {
   name = 'md5',

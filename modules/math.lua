@@ -1,5 +1,5 @@
 local _, util = ...
-local log = require 'logger'
+local log = require('utils.logger')
 
 local _MATH = {
   name = 'math',

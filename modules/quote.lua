@@ -1,6 +1,6 @@
 local req,_,shared,client  = ...
 local pp = req('pretty-print')
-local log = require('logger')
+local log = require('utils.logger')
 local sql = req("sqlite3")
 
 local _VQUOTE = {
