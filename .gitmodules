@@ -1,3 +1,4 @@
 [submodule "www"]
 	path = www
 	url = git@github.com:LazyShpee/discord-egobot-www.git
+	branch = master

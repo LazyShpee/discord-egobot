@@ -13,7 +13,7 @@ You will need to get [luvit](http://luvit.io/), lit and [sqlite3](https://sqlite
 Clone this repo
 
 ```
-git clone git@github.com:LazyShpee/discord-egobot.git && cd discord-egobot
+git clone --recursive git@github.com:LazyShpee/discord-egobot.git && cd discord-egobot
 ```
 
 Let lit install it's dependencies
