@@ -171,7 +171,7 @@ local _LOAD = {
 	    }
 	 }
 	 local attachment = loadstring('return ('..t.attachment[r]..')')()
-	 if attachment then
+	 if attachment and #attachment > 0 then
 	    res.embed.image = {url = attachment[1].url}
 	 end
 	 m:reply(res)

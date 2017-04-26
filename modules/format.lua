@@ -21,6 +21,7 @@ local ascii_emotes = setmetatable(
     yudodis = 'ლ(ಠ_ಠლ)',
     money = '[̲̅$̲̅(̲̅ ͡° ͜ʖ ͡°̲̅)̲̅$̲̅]',
     judge = 'ఠ_ఠ',
+    this = '↑',
   },
   {
       __index = function(t, k) return k end

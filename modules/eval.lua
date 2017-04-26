@@ -64,7 +64,7 @@ local _EVAL = {
       if not sandbox._S then m:reply(util.code('Execution completed.')) end
     else
       output = table.concat(output, '\n')
-      if not sandbox._S and sandbox._O then
+      if not sandbox._S or sandbox._O then
         if #output <= 1990 then
           if sandbox._C then
             m:reply(util.code(output))
@@ -103,7 +103,8 @@ Sandbox Variable:
     delete = { type = 'toggle', default = false, label = 'Delete command message' },
     ouput = { type = 'toggle', default = true, label = 'Show output' },
     code = { type = 'toggle', default = true, label = 'Format output in command block' },
-    persist = { type = 'toggle', default = true, label = 'Persistent run environment' }
+    persist = { type = 'toggle', default = true, label = 'Persistent run environment' },
+--    add = { type = 'editor', default = '', label = 'Code to execute on reset()', lang = 'lua' }
   }
 }
 

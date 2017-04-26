@@ -35,6 +35,14 @@ function string:mmatch(pattern)
   return ma
 end
 
+function util.hash_size(tbl)
+  local c = 0
+  for i in pairs(tbl) do
+    c = c + 1
+  end
+  return c
+end
+
 function util.code(c, l)
   return '```'..(l or '')..'\n'..c..'```'
 end
@@ -101,6 +109,7 @@ end})
 
 
 local modules_dir = 'modules/'
+
 for _, fn in ipairs(fs.readdirSync(modules_dir)) do
   if fn:match('^([^.]+)%.lua$') then
     local fcmd, err = loadfile(modules_dir..fn)
@@ -112,7 +121,7 @@ for _, fn in ipairs(fs.readdirSync(modules_dir)) do
       for _, cmd in ipairs(cmds) do
         if not commands[cmd.name].name then
           commands[cmd.name] = cmd
-          log('Registered command \''.. cmd.name ..'\'', log.Info, 'core')
+          --log('Registered command \''.. cmd.name ..'\'', log.Info, 'core')
           cmd.filename = fn
 
           local r = db:exec('SELECT * FROM modules WHERE name = "'..(cmd.name)..'"')
@@ -132,6 +141,10 @@ for _, fn in ipairs(fs.readdirSync(modules_dir)) do
             end
           end
           
+          if cmd.enabled and cmd.on_option_update then
+            cmd.on_option_update(getModuleOptions(cmd.name))
+          end
+          
         else
           log('Command \''.. cmd.name ..'\' from '..fn..' is already registered', log.Warning, 'core')
         end
@@ -140,18 +153,21 @@ for _, fn in ipairs(fs.readdirSync(modules_dir)) do
   end
 end
 
-
+log('Loaded '..util.hash_size(commands)..' module(s).', log.Info, 'core')
 
 --[[
    Discordia events and main loop
 ]]
+
+local http_started = false
 
 client:on('ready',
   function()
     args[2] = nil -- "Why the f**k would you print args ?" -- Courtesy of Siapran
     args[3] = nil
     log(string.format('Logged in as %s#%d (%d)', client.user.username, client.user.discriminator, client.user.id), log.Info, 'core')
-    if http_server then
+    if http_server and not http_started then
+      http_start = true
       http_server:listen(1234)
       log('Listening on port 1234')
     end
