@@ -7,7 +7,6 @@ local _RUN = {
   function(msg, cmd, arg, config)
     if #arg == 0 then return end
      
-    msg.content = config.prefix..cmd..' `'..arg..'`'
     local file = assert(io.popen(arg, 'r'))
     local output = file:read('*all')
     file:close()
