@@ -1,6 +1,8 @@
 local _, util = ...
 local ascii_emotes = setmetatable(
   {
+    nicememe = 'nÍ«iÍ¤cÍ«eÍ¤',
+    zerospace = '​​',
     zoidberg = '(V) (°,,,,°) (V)',
     check = '✓',
     cmd = '⌘',

@@ -50,8 +50,8 @@ local _EVAL = {
     sandbox._D = o.delete -- Delete eval message
     sandbox._E = o.error  -- output error log
     sandbox.reset = reset
-    sandbox.print = function(...) table.insert(output, printLine(...)) end
-    sandbox.p = function(...) table.insert(output, prettyLine(...)) end
+    sandbox.print = function(...) local p = printLine(...) table.insert(output, p) return p end
+    sandbox.p = function(...) local p = prettyLine(...) table.insert(output, p) return p end
     sandbox.client = client
     sandbox.util = util
             

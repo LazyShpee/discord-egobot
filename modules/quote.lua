@@ -154,21 +154,21 @@ local _LOAD = {
       local t = db:exec("SELECT * FROM saved_messages WHERE "..a..";")
       if t and #t > 0 then
 	 local r = math.random(1, #t.mid)
-	 local res = {
-	    embed = {
-	       description = t.content[r],
-	       color = 3492471,
-	       timestamp =  os.date('!%Y-%m-%dT%H:%M:%S', t.created[r]),
-	       author = {
-		  name = t.uname[r],
-		  url = "http://"..tostring(t.mid[r])..".mid",
-		  icon_url = t.uav[r]
-	       },
-	       footer = {
-		  icon_url = t.gim[r],
-		  text = "On "..t.gname[r].." | #"..t.cname[r]
-	       }
-	    }
+    local res = {
+      embed = {
+        description = t.content[r],
+        color = 3492471,
+        timestamp =  os.date('!%Y-%m-%dT%H:%M:%S', t.created[r]),
+        author = {
+          name = t.uname[r],
+          url = "http://"..tostring(t.mid[r])..".mid",
+          icon_url = t.uav[r]
+        },
+        footer = {
+          icon_url = t.gim[r],
+          text = "On "..t.gname[r].." | #"..t.cname[r]
+        }
+      }
 	 }
 	 local attachment = loadstring('return ('..t.attachment[r]..')')()
 	 if attachment and #attachment > 0 then

@@ -9,6 +9,7 @@ local config = dofile('./config.lua')
 
 local token, webpass, http_server = args[2], args[3]
 local start_date = os.date()
+local logfile = io.open('logs.log', 'a')
 
 --[[
    Helper function
@@ -167,14 +168,45 @@ client:on('ready',
     args[3] = nil
     log(string.format('Logged in as %s#%d (%d)', client.user.username, client.user.discriminator, client.user.id), log.Info, 'core')
     if http_server and not http_started then
-      http_start = true
+      http_started = true
       http_server:listen(1234)
       log('Listening on port 1234')
     end
   end)
 
+client:on('messageUpdate', function (msg)
+    if msg.channel.isPrivate then
+      io.stderr:write('[E][PRIVAMSG]['..os.time()..':'..os.date()..']['..msg.author.id..':'..msg.id..']'..
+                    '['..msg.author.username..'#'..msg.author.discriminator..']:'..msg.content..'\n')
+    else
+      io.stderr:write('[E][GUILDMSG]['..os.time()..':'..os.date()..']['..msg.guild.id..':'..msg.channel.id..':'..msg.author.id..':'..msg.id..']'..
+                    '['..msg.guild.name..':'..msg.channel.name..':'..msg.author.username..'#'..msg.author.discriminator..']:'..msg.content..'\n')
+    end
+end)
+
+
+client:on('messageDelete', function (msg)
+    if msg.channel.isPrivate then
+      io.stderr:write('[D][PRIVAMSG]['..os.time()..':'..os.date()..']['..msg.author.id..':'..msg.id..']'..
+                    '['..msg.author.username..'#'..msg.author.discriminator..']:'..msg.content..'\n')
+    else
+      io.stderr:write('[D][GUILDMSG]['..os.time()..':'..os.date()..']['..msg.guild.id..':'..msg.channel.id..':'..msg.author.id..':'..msg.id..']'..
+                    '['..msg.guild.name..':'..msg.channel.name..':'..msg.author.username..'#'..msg.author.discriminator..']:'..msg.content..'\n')
+    end
+end)
+
+
+  
 client:on('messageCreate',
   function(msg)
+    if msg.channel.isPrivate then
+      io.stderr:write('[C][PRIVAMSG]['..os.time()..':'..os.date()..']['..msg.author.id..':'..msg.id..']'..
+                    '['..msg.author.username..'#'..msg.author.discriminator..']:'..msg.content..'\n')
+    else
+      io.stderr:write('[C][GUILDMSG]['..os.time()..':'..os.date()..']['..msg.guild.id..':'..msg.channel.id..':'..msg.author.id..':'..msg.id..']'..
+                    '['..msg.guild.name..':'..msg.channel.name..':'..msg.author.username..'#'..msg.author.discriminator..']:'..msg.content..'\n')
+    end
+  
     -- exit early if the author is the *NOT* same as the client
     if msg.author ~= client.user then return end
     -- exit if message isn't a command'
