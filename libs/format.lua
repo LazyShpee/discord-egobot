@@ -1,7 +1,7 @@
 local md5 = require('./libs/md5')
 
 local fmt = {
-  ae = function(s)
+  ae = function(s) -- Convert any ascii to fullwidth
     local r = ''
     for i=1,#s do
       local v = s:sub(i, i):byte(1)
@@ -18,7 +18,7 @@ local fmt = {
     return r
   end,
   
-  sb = function(s)
+  sb = function(s) -- Retarded spongebob
     return s:gsub('[a-zA-Z]', function(r)
       if math.random(2) == 1 then
         return r:upper()
@@ -28,11 +28,15 @@ local fmt = {
     end)
   end,
   
-  sp = function(s)
-    return s:gsub('(.)', '%1 '):gsub(' +$', '')
+  sp = function(s) -- Adds spaces after every characters
+    return s:gsub('(.)', function(c)
+      if c:byte(1) < 127 then
+        return c..' '
+      end
+    end):gsub(' +$', '')
   end,
   
-  ro = function(s)
+  ro = function(s) -- Randomly shuffles words
     local ws = {}
     for w in s:gmatch('%S+') do
       ws[#ws + 1] = w
