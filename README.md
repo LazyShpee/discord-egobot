@@ -53,8 +53,9 @@ If `operation_name` is known by the formatter it will replace the curly braces o
 * `up` - puts the text in uppercase
 
 They can be combined with `+` and are treated from left to right.
+
 Example:
-`//s {sb+ae Retarded spongebob aesthetics} normal text {cw sofa trigger machine}`
+```//s {sb+ae Retarded spongebob aesthetics} normal text {cw sofa trigger machine}```
 
 ### Info
 
