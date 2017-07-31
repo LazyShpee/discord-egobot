@@ -30,8 +30,22 @@ local fmt = {
   
   sp = function(s)
     return s:gsub('(.)', '%1 '):gsub(' +$', '')
+  end,
+  
+  ro = function(s)
+    local ws = {}
+    for w in s:gmatch('%S+') do
+      ws[#ws + 1] = w
+    end
+    for i=1,#ws do
+      local r = math.random(#ws)
+      ws[i], ws[r] = ws[r], ws[i]
+    end
+    return table.concat(ws, ' ')
   end
 }
+
+-- Eventual TODO: Nested formats
 
 return function(str)
   return str:gsub('{(%S+)%s+(%S.-)}', function(ops, param)
