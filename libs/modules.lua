@@ -98,7 +98,7 @@ end
 function execModules(self, command, args)
   local name, argument = command:match('^(%S+)%s*(%S*.-)%s*$')
   if name and argument then
-    if self._mods[name] and type(self._mods[name].call) == 'function' then
+    if self._config.modules.data[name] and self._mods[name] and type(self._mods[name].call) == 'function' then
       local status, err = pcall(self._mods[name].call, self._mods[name], argument, args)
       p('command', name, argument)
       if not status then
