@@ -2,6 +2,7 @@ local discordia = require('discordia')
 local client = discordia.Client()
 
 local configFile = require('./libs/configfile')
+local ts = require('./libs/tablesave')
 local getfiles = require('./libs/getfiles')
 const = require('./libs/const')
   const.client = client
@@ -11,7 +12,7 @@ const = require('./libs/const')
 
 local data = {
   modules = configFile('./data/modules.lua'),
-  options = configFile('./config.lua')
+  options = configFile('./config.lua', ts.load('./config.example.lua'))
 }
 
 local modules = require('./libs/modules')(client, data)
