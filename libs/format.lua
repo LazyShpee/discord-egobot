@@ -46,7 +46,14 @@ local fmt = {
       ws[i], ws[r] = ws[r], ws[i]
     end
     return table.concat(ws, ' ')
-  end
+  end,
+  
+  cw = function(s)
+    return (' '..s):gsub('[^_0-9a-zA-Z][a-zA-Z]', function(l) return l:upper() end):sub(2)
+  end,
+  
+  lo = string.lower,
+  up = string.upper
 }
 
 -- Eventual TODO: Nested formats
