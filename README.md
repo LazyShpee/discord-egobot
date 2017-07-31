@@ -31,6 +31,35 @@ To run Egobot, you will need to get your Discord token (google is your friend, m
 luvit egobot.lua --token DISCORD_TOKEN
 ```
 
+## Current Features
+
+Examples will be using the default prefix `//`
+
+### Say and Edit
+
+* `//s <text>` - deletes the command message and replies for formatted text
+* `//e <text>` - edits the command message and changes it to formatted text
+
+Text can plain text with a combination of one or more curly braces operations formatted as follow:
+`{operation_name text}`
+
+If `operation_name` is known by the formatter it will replace the curly braces operation by formatted text as follow:
+* `ae` - converts ascii characters to fullwidth
+* `sb` - retarded spongebob talk
+* `sp` - adds spaces in betwee, each characters (including spaces)
+* `ro` - randomly shuffles the words
+* `cw` - capitalize the first letter of each word
+* `lo` - puts the text in lowercase
+* `up` - puts the text in uppercase
+
+They can be combined with `+` and are treated from left to right.
+Example:
+`//s {sb+ae Retarded spongebob aesthetics} normal text {cw sofa trigger machine}`
+
+### Info
+
+* `//info` - display a small embed with info about my creation, don't hesitate to share (^-^)b
+
 ## Author
 
 * ***REMOVED*** [LazyShpee](https://github.com/LazyShpee)
