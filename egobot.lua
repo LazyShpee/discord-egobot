@@ -1,7 +1,7 @@
 local discordia = require('discordia')
 local client = discordia.Client()
 
-local configFile = require('./libs/config')
+local configFile = require('./libs/configfile')
 local getfiles = require('./libs/getfiles')
 const = require('./libs/const')
   const.client = client
