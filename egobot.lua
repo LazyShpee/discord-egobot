@@ -3,6 +3,11 @@ local client = discordia.Client()
 
 local configFile = require('./libs/config')
 local getfiles = require('./libs/getfiles')
+const = require('./libs/const')
+  const.client = client
+  const.startTime = os.date('!%Y-%m-%dT%H:%M:%S')
+  const.hostname = io.popen('hostname'):read()
+  const.version = io.popen('git show-ref --head --abbrev --hash'):read()
 
 local data = {
   modules = configFile('./data/modules.lua'),
@@ -24,6 +29,7 @@ local parser = require('./libs/argparse').new({
     text = 'Displays this help message'
   }
 })
+
 
 local argv = parser:parse(args, 2)
 for i in pairs(args) do args[i] = nil end

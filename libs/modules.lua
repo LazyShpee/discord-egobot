@@ -6,7 +6,7 @@ local log = require('./libs/log')
 --loadfile ([filename [, mode [, env]]])
 
 function loadModuleFile(self, filename)
-  local func, syntax = loadfile(filename)
+  local func, syntax = loadfile(filename, 't')
   if not func and syntax then
     return nil, 'Error loading file "'..filename..'": '..syntax
   end
@@ -102,7 +102,7 @@ function execModules(self, command, args)
       local status, err = pcall(self._mods[name].call, self._mods[name], argument, args)
       p('command', name, argument)
       if not status then
-        log('Error while calling module "'..name..'"')
+        log('Error while calling module "'..name..'": '..err)
       end
     end
   end
