@@ -26,13 +26,20 @@ local fmt = {
         return r:lower()
       end
     end)
+  end,
+  
+  sp = function(s)
+    return s:gsub('(.)', '%1 '):gsub(' +$', '')
   end
 }
 
 return function(str)
-  return str:gsub('{(%S+)%s+(%S.*)}', function(op, param)
-    if fmt[op] then
-      return fmt[op](param)
+  return str:gsub('{(%S+)%s+(%S.-)}', function(ops, param)
+    for op in ops:gmatch('[^+]+') do
+      if fmt[op] then
+        param = fmt[op](param)
+      end
     end
+    return param
   end)
 end
