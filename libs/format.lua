@@ -53,7 +53,9 @@ local fmt = {
   end,
   
   lo = string.lower,
-  up = string.upper
+  up = string.upper,
+  
+  md5 = md5.sumhexa
 }
 
 -- Eventual TODO: Nested formats

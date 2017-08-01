@@ -54,6 +54,7 @@ If `operation_name` is known by the formatter it will replace the curly braces o
 * `cw` - capitalize the first letter of each word
 * `lo` - puts the text in lowercase
 * `up` - puts the text in uppercase
+* `md5` - produces a md5 hash
 
 They can be combined with `+` and are treated from left to right.
 
