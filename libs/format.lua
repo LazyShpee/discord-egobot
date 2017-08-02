@@ -60,11 +60,12 @@ local fmt = {
 
 -- Eventual TODO: Nested formats
 
-return function(str)
+return function(str, path)
+  path = path or './user/'
   return str:gsub('{(%S+)%s+(%S.-)}', function(ops, param)
     for op in ops:gmatch('[^+]+') do
       if fmt[op] then
-        param = fmt[op](param)
+        param = fmt[op](param, path)
       end
     end
     return param

@@ -71,6 +71,20 @@ Example:
 
 * `//test` - just replies with `Nice test module BRO :ok_hand:`
 
+## TODO (order is arbitrary)
+
+To be done in a near future/upcomming commits
+
+* `//s {txt path_to_file}` - output content of file
+* `//s {rf folder} {rfr folder}` - uploads a random file from folder (and subfolders with rfr)
+* Alias system
+
+To be done some other time
+
+* Web UI for config and administering
+* `userinfo`, `avatar` and other utils commands
+* `eval` and `math` from previous egobot
+
 ## Author
 
 * ***REMOVED*** [LazyShpee](https://github.com/LazyShpee)
