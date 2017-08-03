@@ -55,7 +55,16 @@ local fmt = {
   lo = string.lower,
   up = string.upper,
   
-  md5 = md5.sumhexa
+  md5 = md5.sumhexa,
+  
+  txt = function(path)
+    local fd = io.open('./user/'..path)
+    if fd then
+      local all = fd:read('*all')
+      fd:close()
+      return all
+    end
+  end
 }
 
 -- Eventual TODO: Nested formats
