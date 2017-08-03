@@ -3,7 +3,7 @@ local function istr(ind)
     if ind:match('^[a-zA-Z_][a-zA-Z0-9_]*$') then
       return ind
     end
-    return '["'..ind:gsub('"', '\\"')..'"]'
+    return '["'..ind:gsub('"', '\\"'):gsub('\n', '\\n')..'"]'
   end
   return '['..ind..']'
 end
@@ -23,7 +23,7 @@ local function tdisplay(t, o, i)
     elseif ty == 'number' or ty == 'boolean' or ty == 'nil' then
       r = r .. tostring(_v)
     elseif ty == 'string' then
-      r = r .. '"' .. _v:gsub('"', '\\"') .. '"'
+        r = r .. '"' .. _v:gsub('"', '\\"'):gsub('\n', '\\n') .. '"'
     end
     r = r .. ',\n'
   end
