@@ -1,3 +1,5 @@
+math.randomseed(os.time())
+
 local discordia = require('discordia')
 local client = discordia.Client()
 

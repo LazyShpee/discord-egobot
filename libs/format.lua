@@ -67,7 +67,7 @@ local fmt = {
     return ''
   end,
   
-  txt = function(path)
+  rl = function(path)
     local fd = io.open('./user/'..path)
     if fd then
       local cont, line = {}, fd:read('*line')
@@ -75,6 +75,7 @@ local fmt = {
         cont[#cont + 1] = line
         line = fd:read('*line')
       end
+      cont[#cont + 1] = line
       fd:close()
       return cont[math.random(#cont)]
     end
