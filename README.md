@@ -63,6 +63,10 @@ Say (`//s`) has an additional operation: `file`, it adds on or multiple files fr
 Example:
 ```//s {sb+ae Retarded spongebob aesthetics} normal text {cw sofa trigger machine}```
 
+### Alias
+
+TODO
+
 ### Info
 
 * `//info` - display a small embed with info about my creation, don't hesitate to share (^-^)b
@@ -77,7 +81,7 @@ To be done in a near future/upcomming commits
 
 * `//s {txt path_to_file}` - output content of file
 * `//s {rf folder} {rfr folder}` - uploads a random file from folder (and subfolders with rfr)
-* Alias system
+* Alias ~~system~~ management
 
 To be done some other time
 

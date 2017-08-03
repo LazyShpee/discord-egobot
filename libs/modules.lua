@@ -1,4 +1,5 @@
-local log = require('./libs/log')
+local log = require('libs/log')
+local const = require('libs/const')
 
 -- load
 -- unload
@@ -6,7 +7,7 @@ local log = require('./libs/log')
 --loadfile ([filename [, mode [, env]]])
 
 function loadModuleFile(self, filename)
-  local func, syntax = loadfile(filename, 't')
+  local func, syntax = loadfile(filename, 't', _G)
   if not func and syntax then
     return nil, 'Error loading file "'..filename..'": '..syntax
   end
@@ -67,7 +68,7 @@ function enableModule(self, name)
   end
   
   if mod.enable and self._config.modules.data[name] then
-    local status, r, s = pcall(mod.enable, mod)
+    local status, r, s = pcall(mod.enable, mod, self._client)
     if not status then
       return nil, 'Error trying enabling module "'..mod.name..'": '..r
     end
@@ -85,7 +86,7 @@ function disableModule(self, name)
   end
   
   if mod.disable and not self._config.modules.data[name] then
-    local status, err, err2 = pcall(mod.disable, mod)
+    local status, err, err2 = pcall(mod.disable, mod, self._client)
     if not status then
       return nil, 'Could not disable "'..name..'": '..err
     elseif type(err) == 'boolean' and not err then

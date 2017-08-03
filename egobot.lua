@@ -4,7 +4,7 @@ local client = discordia.Client()
 local configFile = require('./libs/configfile')
 local ts = require('./libs/tablesave')
 local getfiles = require('./libs/getfiles')
-const = require('./libs/const')
+const = require('libs/const')
   const.client = client
   const.startTime = os.date('!%Y-%m-%dT%H:%M:%S')
   const.hostname = io.popen('hostname'):read()
@@ -14,10 +14,12 @@ local data = {
   modules = configFile('./data/modules.lua'),
   options = configFile('./config.lua', ts.load('./config.example.lua'))
 }
+  const.data = data
 
-local modules = require('./libs/modules')(client, data)
-local log = require('./libs/log')
-local parser = require('./libs/argparse').new({
+local modules = require('libs/modules')(client, data)
+  const.modules = modules
+local log = require('libs/log')
+local parser = require('libs/argparse').new({
   token = {
     long = 'token',
     short = 't',

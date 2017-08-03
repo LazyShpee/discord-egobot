@@ -1,5 +1,4 @@
 local ts = require('./libs/tablesave')
-local fs = require('fs')
 
 return function(location, default)
   local cfg = {
