@@ -57,6 +57,7 @@ If `operation_name` is known by the formatter it will replace the curly braces o
 * `md5` - produces a md5 hash
 * `txt` - outputs the content of a file
 * `rl` - outputs a random line from a file
+
 They can be combined with `+` and are treated from left to right.
 
 Say (`//s`) has an additional operation: `file`, it adds on or multiple files from urls or from the `user` folder.
@@ -80,7 +81,6 @@ TODO
 
 To be done in a near future/upcomming commits
 
-* `//s {rl path_to_file}` - gets random line from file
 * `//s {rf folder} {rfr folder}` - uploads a random file from folder (and subfolders with rfr)
 * Alias ~~system~~ management
 
