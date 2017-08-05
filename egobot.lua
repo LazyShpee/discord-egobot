@@ -11,6 +11,8 @@ const = require('libs/const')
   const.startTime = os.date('!%Y-%m-%dT%H:%M:%S')
   const.hostname = io.popen('hostname'):read()
   const.version = io.popen('git show-ref --head --abbrev --hash'):read()
+  const.getfiles = getfiles
+  const.require = require
 
 local data = {
   modules = configFile('./data/modules.lua'),
@@ -18,10 +20,10 @@ local data = {
 }
   const.data = data
 
-local modules = require('libs/modules')(client, data)
+local modules = require('./libs/modules')(client, data)
   const.modules = modules
-local log = require('libs/log')
-local parser = require('libs/argparse').new({
+local log = require('./libs/log')
+local parser = require('./libs/argparse').new({
   token = {
     long = 'token',
     short = 't',

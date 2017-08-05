@@ -1,4 +1,5 @@
 local format = require('./libs/format')
+local const = require('libs/const')
 
 return {
   name = 's',
@@ -13,6 +14,10 @@ return {
       else -- relative path
         files[#files + 1] = './user/'..s
       end
+      return ''
+    end):gsub('{rf(r?) ([^}]+)}', function(r, path)
+      local f = const.getfiles('./user/'..path, r ~= 'r' and function(_, _, depth) return depth == 0 end)
+      files[#files + 1] = f[math.random(#f)]
       return ''
     end))
   

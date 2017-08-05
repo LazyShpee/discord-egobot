@@ -60,7 +60,10 @@ If `operation_name` is known by the formatter it will replace the curly braces o
 
 They can be combined with `+` and are treated from left to right.
 
-Say (`//s`) has an additional operation: `file`, it adds on or multiple files from urls or from the `user` folder.
+Say (`//s`) has additional operations, root is the `user` folder:
+
+* `file` - attaches a file from url or path provided
+* `rf` and `rfr` - attaches a random file from path, `rfr` includes subfolders
 
 Example:
 ```//s {sb+ae Retarded spongebob aesthetics} normal text {cw sofa trigger machine}```
@@ -81,7 +84,6 @@ TODO
 
 To be done in a near future/upcomming commits
 
-* `//s {rf folder} {rfr folder}` - uploads a random file from folder (and subfolders with rfr)
 * Alias ~~system~~ management
 
 To be done some other time

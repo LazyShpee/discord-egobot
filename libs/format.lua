@@ -92,6 +92,8 @@ return function(str, path)
     for op in ops:gmatch('[^+]+') do
       if fmt[op] then
         param = fmt[op](param, path)
+      else
+        return
       end
     end
     return param

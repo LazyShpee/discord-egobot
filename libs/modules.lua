@@ -7,7 +7,7 @@ local const = require('libs/const')
 --loadfile ([filename [, mode [, env]]])
 
 function loadModuleFile(self, filename)
-  local func, syntax = loadfile(filename, 't', _G)
+  local func, syntax = loadfile(filename, 't', setmetatable({require = require}, {__index = _G}))
   if not func and syntax then
     return nil, 'Error loading file "'..filename..'": '..syntax
   end
