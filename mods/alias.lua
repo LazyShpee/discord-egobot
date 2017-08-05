@@ -1,6 +1,6 @@
 local const = require('libs/const')
 local configFile = require('./libs/configfile')
-
+local emoji = require('./libs/emojis')
 local aliases = configFile('./data/aliases.lua')
 
 local function aliasHook(message)
@@ -31,6 +31,45 @@ end
 
 return {
   name = 'alias',
+  
+  call = function(self, argument, args)
+    local action, alias, arg = argument:match('^(%S*)%s*(%S*)%s*(.*)$')
+    if action == 'set' and #alias > 0 and #arg > 0 then
+      aliases.data[alias] = aliases.data[alias] or {}
+      aliases.data[alias].value = arg
+      args.message:addReaction(emoji.heavy_check_mark)
+    elseif action == 'delete' and #alias > 0 and aliases.data[alias] then
+      aliases.data[alias] = nil
+      args.message:addReaction(emoji.heavy_check_mark)
+    elseif action == 'show' and #alias > 0 and aliases.data[alias] then
+      args.message:reply({embed = {
+        author = {name = alias},
+        description = '```'..aliases.data[alias].value..'```',
+        color = 16384030,
+        fields = {{
+          name = 'Arguments',
+          value = aliases.data[alias].value.params or 'None'
+        }}
+      }})
+    elseif action == 'save' then
+      aliases:save()
+      args.message:addReaction(emoji.heavy_check_mark)
+    elseif action == 'reload' then
+      aliases:load()
+      args.message:addReaction(emoji.heavy_check_mark)
+    elseif action == 'params' and #alias > 0 and aliases.data[alias] then
+      if #arg == 0 then
+        aliases.data[alias].params = nil
+      else
+        aliases.data[alias].params = arg:lower()
+      end
+      args.message:addReaction(emoji.heavy_check_mark)
+    elseif action == 'list' then
+    
+    else
+      args.message:addReaction(emoji.question)
+    end
+  end,
   
   enable = function(self, client)
     client:on('messageCreate', aliasHook)

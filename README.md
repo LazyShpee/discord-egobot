@@ -70,7 +70,16 @@ Example:
 
 ### Alias
 
-TODO
+`//alias <action> [alias] [value]`
+
+Actions are one of:
+
+* `set <alias> <value>` - creates or changes an alias
+* `delete <alias>` - deletes an alias
+* `params <alias> [inline|before|after]` - sets if arguments are passed on, `inline` replaces `%s` by the argument
+* `save` and `reload` - saves and reload aliases to/from config
+* `list` - TODO
+* `show <alias>` - shows an alias value and its configuration
 
 ### Info
 
@@ -84,7 +93,7 @@ TODO
 
 To be done in a near future/upcomming commits
 
-* Alias ~~system~~ management
+* Alias ~~system~~ ~~management~~ listing
 
 To be done some other time
 
