@@ -6,6 +6,7 @@ return {
   call = function(self, argument, args)
   
     local reply = {}
+    local nd = false
     local files = {}
 
     reply.content = format(argument:gsub('{file ([^}]+)}', function(s)
@@ -19,13 +20,15 @@ return {
       local f = const.getfiles('./user/'..path, r ~= 'r' and function(_, _, depth) return depth == 0 end)
       files[#files + 1] = f[math.random(#f)]
       return ''
-    end))
+    end):gsub('{nodelete}', function() nd = true return '' end))
   
     if #files > 0 then
       reply.files = files
     end
   
     args.message:reply(reply)
-    args.message:delete()
+    if not nd then
+      args.message:delete()
+    end
   end
 }
