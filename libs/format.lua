@@ -81,6 +81,19 @@ local fmt = {
     end
     
     return ''
+  end,
+  
+  math = function(expr)
+    if not expr or #expr == 0 then return '' end -- Check for no arg or empty arg
+    local ft = "return (" .. expr .. ")" -- Make text function
+
+    local sb = setmetatable({}, {__index = math}) -- Create sandbox with math functions as its index (props to Siapran)
+    local f, syntax_error = load(ft, '{sandbox.math}', 't', sb) -- Load text function
+    if not f then return 'LERR' end -- Test for syntax error and output it if any
+
+    local status, res = pcall(f) -- safe (catch) call function
+    if not status then return 'RERR' end -- return with error if any
+    return tostring(res) -- return result
   end
 }
 
@@ -88,7 +101,8 @@ local fmt = {
 
 return function(str, path)
   path = path or './user/'
-  return str:gsub('{(%S+)%s+(%S.-)}', function(ops, param)
+  --str = str:gsub('\\\\', '\1'):gsub('\\{')
+  str = str:gsub('{(%S+)%s+(%S.-)}', function(ops, param)
     for op in ops:gmatch('[^+]+') do
       if fmt[op] then
         param = fmt[op](param, path)
@@ -98,4 +112,6 @@ return function(str, path)
     end
     return param
   end)
+  
+  return str
 end
