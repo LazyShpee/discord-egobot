@@ -100,7 +100,7 @@ local fmt = {
 -- Eventual TODO: Nested formats
 
 local function rest(str)
-  return str:gsub('\2', '\\{'):gsub('\3', '\\}')
+  return str:gsub('\2', '{'):gsub('\3', '}')
 end
 
 return function(str, path)
