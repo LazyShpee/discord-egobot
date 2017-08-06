@@ -105,8 +105,8 @@ end
 
 return function(str, path)
   path = path or './user/'
-  str = str:gsub('\\\\', '\1'):gsub('\\{', '\2'):gsub('\\}', '\3'):gsub('\1', '\\\\')
-  rest(str:gsub('{(%S+)%s+(%S.-)}', function(ops, param)
+  str = str:gsub('\\\\', '\1'):gsub('\\{', '\2'):gsub('\\}', '\3'):gsub('\1', '\\')
+  return rest(str:gsub('{(%S+)%s+(%S.-)}', function(ops, param)
     param = rest(param)
     for op in rest(ops):gmatch('[^+]+') do
       if fmt[op] then
