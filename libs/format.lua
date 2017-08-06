@@ -99,11 +99,16 @@ local fmt = {
 
 -- Eventual TODO: Nested formats
 
+local function rest(str)
+  return str:gsub('\2', '\\{'):gsub('\3', '\\}')
+end
+
 return function(str, path)
   path = path or './user/'
-  --str = str:gsub('\\\\', '\1'):gsub('\\{')
-  str = str:gsub('{(%S+)%s+(%S.-)}', function(ops, param)
-    for op in ops:gmatch('[^+]+') do
+  str = str:gsub('\\\\', '\1'):gsub('\\{', '\2'):gsub('\\}', '\3'):gsub('\1', '\\\\')
+  rest(str:gsub('{(%S+)%s+(%S.-)}', function(ops, param)
+    param = rest(param)
+    for op in rest(ops):gmatch('[^+]+') do
       if fmt[op] then
         param = fmt[op](param, path)
       else
@@ -111,7 +116,5 @@ return function(str, path)
       end
     end
     return param
-  end)
-  
-  return str
+  end))
 end
