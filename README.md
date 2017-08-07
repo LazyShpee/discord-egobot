@@ -81,6 +81,17 @@ Actions are one of:
 * `list` - TODO
 * `show <alias>` - shows an alias value and its configuration
 
+### Eval
+
+Eval some lua code in the bot's env - `//eval lua code`.
+
+Additional variables:
+
+* `client` - the bot's object
+* `message` - command message object
+* `channel` - channel object of command message
+* `guild` - guild object of command message
+
 ### Info
 
 * `//info` - display a small embed with info about my creation, don't hesitate to share (^-^)b
