@@ -20,7 +20,7 @@ reset()
 return {
   name = 'eval',
   call = function(self, a, args)
-    local msg, tf = args.message
+    local m, tf = args.message
     if     a:match("^```[^\n]-\n(.*)```$") then       tf = a:match("^```[^\n]-\n(.*)```$")
     elseif a:match("^`(.*)`$") then                   tf = a:match("^`(.*)`$")
     else                                              tf = a
@@ -40,7 +40,7 @@ return {
     if not success then return m:reply('```\n'..runtime..'```') end
     
     if #output == 0 then
-      msg:addReaction(emoji.heavy_check_mark)
+      m:addReaction(emoji.heavy_check_mark)
     else
       local o = table.concat(output, '\n')
       if #o > 1985 then

@@ -109,8 +109,6 @@ To be done in a near future/upcomming commits
 To be done some other time
 
 * Web UI for config and administering
-* `userinfo`, `avatar` and other utils commands
-* `eval` and `math` from previous egobot
 
 ## Author
 
