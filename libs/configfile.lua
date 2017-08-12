@@ -7,7 +7,12 @@ return function(location, default)
       ts.save(self.data, self.file)
     end,
     load = function(self)
-      self.data = ts.load(self.file)
+      local data, err = ts.load(self.file)
+      if err then
+        print('Fatal error loading '..self.file..': '..err)
+        os.exit()
+      end
+      self.data = data
     end
   }
   

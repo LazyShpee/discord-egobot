@@ -47,10 +47,10 @@ local function tload(f)
   fd:close()
   
   local func, syntax = load('return '..ts, 'table.load', 't', {})
-  if syntax then p('tlerror', syntax) return nil, syntax end
+  if syntax then return nil, syntax end
   
   local status, t = pcall(func)
-  if not status then p('tlerror', t) return nil, t end
+  if not status then return nil, t end
   return t
 end
 
