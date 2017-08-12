@@ -3,7 +3,7 @@ local function istr(ind)
     if ind:match('^[a-zA-Z_][a-zA-Z0-9_]*$') then
       return ind
     end
-    return '["'..ind:gsub('"', '\\"'):gsub('\n', '\\n'):gsub('\\', '\\\\')..'"]'
+    return '["'..ind:gsub('\\', '\\\\'):gsub('"', '\\"'):gsub('\n', '\\n')..'"]'
   end
   return '['..ind..']'
 end
@@ -23,7 +23,7 @@ local function tdisplay(t, o, i)
     elseif ty == 'number' or ty == 'boolean' or ty == 'nil' then
       r = r .. tostring(_v)
     elseif ty == 'string' then
-        r = r .. '"' .. _v:gsub('"', '\\"'):gsub('\n', '\\n'):gsub('\\', '\\\\') .. '"'
+        r = r .. '"' .. _v:gsub('\\', '\\\\'):gsub('"', '\\"'):gsub('\n', '\\n') .. '"'
     end
     r = r .. ',\n'
   end
@@ -47,10 +47,10 @@ local function tload(f)
   fd:close()
   
   local func, syntax = load('return '..ts, 'table.load', 't', {})
-  if syntax then return nil, syntax end
+  if syntax then p('tlerror', syntax) return nil, syntax end
   
   local status, t = pcall(func)
-  if not status then return nil, t end
+  if not status then p('tlerror', t) return nil, t end
   return t
 end
 
