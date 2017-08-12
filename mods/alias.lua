@@ -48,7 +48,7 @@ return {
         color = 16384030,
         fields = {{
           name = 'Arguments',
-          value = aliases.data[alias].value.params or 'None'
+          value = aliases.data[alias].params or 'None'
         }}
       }})
     elseif action == 'save' then
@@ -65,7 +65,9 @@ return {
       end
       args.message:addReaction(emoji.heavy_check_mark)
     elseif action == 'list' then
-    
+      local _a = {}
+      for a in pairs(aliases.data) do _a[#_a + 1] = a end
+      args.message:reply({embed = {title = 'List of aliases', description = '`'..table.concat(_a, '`, `')..'`'}})
     else
       args.message:addReaction(emoji.question)
     end

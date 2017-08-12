@@ -8,7 +8,8 @@ return {
         icon_url = args.message.author.avatarUrl
       },
       description = "Egobot-rw created by [LazyShpee](https://github.com/LazyShpee/)\nhttps://github.com/LazyShpee/discord-egobot/",
-      color = 99219,
+      type = 'video',
+      --color = 99219,
       timestamp = const.startTime
     }
     

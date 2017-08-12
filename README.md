@@ -78,7 +78,7 @@ Actions are one of:
 * `delete <alias>` - deletes an alias
 * `params <alias> [inline|before|after]` - sets if arguments are passed on, `inline` replaces `%s` by the argument
 * `save` and `reload` - saves and reload aliases to/from config
-* `list` - TODO
+* `list` - Lists aliases
 * `show <alias>` - shows an alias value and its configuration
 
 ### Eval
@@ -104,11 +104,12 @@ Additional variables:
 
 To be done in a near future/upcomming commits
 
-* Alias ~~system~~ ~~management~~ listing
+* TODO :>
 
 To be done some other time
 
 * Web UI for config and administering
+* Alias backup and restore
 
 ## Author
 

@@ -46,7 +46,7 @@ return {
       if #o > 1985 then
         o = o:sub(1, 1985)..'\n[...]'
       end
-      msg:reply('```\n'..o..'```')
+      m:reply('```\n'..o..'```')
     end
   end
 }
