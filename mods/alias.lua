@@ -42,9 +42,13 @@ return {
       aliases.data[alias] = nil
       args.message:addReaction(emoji.heavy_check_mark)
     elseif action == 'show' and #alias > 0 and aliases.data[alias] then
+      local desc = aliases.data[alias].value
+      if arg ~= 'raw' then
+        desc = '```\n'..desc..'```'
+      end
       args.message:reply({embed = {
         author = {name = alias},
-        description = '```'..aliases.data[alias].value..'```',
+        description = desc,
         color = 16384030,
         fields = {{
           name = 'Arguments',

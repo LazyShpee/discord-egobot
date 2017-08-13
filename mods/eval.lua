@@ -10,8 +10,24 @@ end
 
 local sandbox = {}
 
+local function color(a, b, c)
+  -- from discordia Color.lua
+  local value
+  if a and b and c then
+    value = bit.lshift(a, 16) + bit.lshift(b, 8) + c
+  elseif a then
+    if type(a) == 'string' then
+      value = tonumber(a:gsub('#', ''), 16)
+    else
+      value = tonumber(a)
+    end
+  end
+  
+  return value or 0
+end
+
 local function reset()
-  sandbox = {}
+  sandbox = {color = color}
   setmetatable(sandbox, {__index = _G})
 end
 
