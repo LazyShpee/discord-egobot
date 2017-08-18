@@ -2,6 +2,11 @@ local const = require('libs/const')
 local configFile = require('./libs/configfile')
 local emoji = require('./libs/emojis')
 local aliases = configFile('./data/aliases.lua')
+local bash = require('./libs/parsers').bash
+
+local fmt = {
+  s = function (s) return (s) end
+}
 
 local function aliasHook(message)
   if message.client.user.id ~= message.author.id then return end
@@ -17,7 +22,20 @@ local function aliasHook(message)
           if alias.params == 'after' then
             value = value..' '..argument
           elseif alias.params == 'inline' then
-            value = value:format(argument)
+            local args = bash(argument)
+            args[0] = argument
+            local n = 1
+            value = value:gsub('%%%%', '\1'):gsub('%%([0-9]-)([s])', function(_n, f)
+              local num = tonumber(_n)
+              local s
+              if args[num or n] and fmt[f] then
+                s = fmt[f](args[num or n])
+              end
+              if not num then
+                n = n + 1
+              end
+              return s
+            end):gsub('\1', '%%')
           elseif alias.params == 'before' then
             local cmd, arg = value:match('^(%S+)(.*)$')
             value = cmd..' '..argument..arg
@@ -37,6 +55,7 @@ return {
     if action == 'set' and #alias > 0 and #arg > 0 then
       aliases.data[alias] = aliases.data[alias] or {}
       aliases.data[alias].value = arg
+      aliases.data[alias].params = aliases.data[alias].params or 'inline'
       args.message:addReaction(emoji.heavy_check_mark)
     elseif action == 'delete' and #alias > 0 and aliases.data[alias] then
       aliases.data[alias] = nil
