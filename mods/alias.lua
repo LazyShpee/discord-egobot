@@ -28,8 +28,8 @@ local function aliasHook(message)
             value = value:gsub('%%%%', '\1'):gsub('%%([0-9]-)([s])', function(_n, f)
               local num = tonumber(_n)
               local s
-              if args[num or n] and fmt[f] then
-                s = fmt[f](args[num or n])
+              if fmt[f] then
+                s = fmt[f](args[num or n] or '')
               end
               if not num then
                 n = n + 1
