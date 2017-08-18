@@ -9,7 +9,7 @@ return {
     local nd = false
     local files = {}
 
-    reply.content = format(argument:gsub('{file ([^}]+)}', function(s)
+    reply.content = string.char(226, 128, 139)..format(argument:gsub('{file ([^}]+)}', function(s)
       if s:match('^https?://') then -- url
         files[#files + 1] = s
       else -- relative path
