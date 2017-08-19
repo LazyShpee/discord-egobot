@@ -51,9 +51,9 @@ If `operation_name` is known by the formatter it will replace the curly braces o
 * `sb` - retarded spongebob talk
 * `sp` - adds spaces in between each characters (including spaces)
 * `ro` - randomly shuffles the words
-* `cw` - capitalize the first letter of each word
+* `cw` - Capitalize The First Letter Of Each Word
 * `lo` - puts the text in lowercase
-* `up` - puts the text in uppercase
+* `up` - PUTS THE TEXT IN UPPERCASE
 * `md5` - produces a md5 hash
 * `txt` - outputs the content of a file
 * `rl` - outputs a random line from a file
@@ -65,6 +65,8 @@ Say (`//s`) has additional operations, root is the `user` folder, those cannot b
 * `file` - attaches a file from url or path provided
 * `rf` and `rfr` - attaches a random file from path, `rfr` includes subfolders
 * `nodelete` - takes no arguments, prevent the command message deletion
+* `rlu` - takes a random line from a file and uploads it as a `file` would
+
 Example:
 ```//s {sb+ae Retarded spongebob aesthetics} normal text {cw sofa trigger machine}```
 
