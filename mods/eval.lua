@@ -48,6 +48,7 @@ return {
     sandbox.client = args.message.client
     sandbox.guild = args.message.guild
     sandbox.channel = args.message.channel
+    sandbox.emoji = emoji
     sandbox.print = function(...) local p = printLine(...) table.insert(output, p) end
     
     local fn, syntax = load(tf, 'eval', 't', sandbox)
