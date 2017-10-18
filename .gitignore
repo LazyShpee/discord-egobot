@@ -3,3 +3,8 @@ config.lua
 deps/
 *~
 gateway.json
+*.log
+*_old
+test.lua
+data/database
+data/db
