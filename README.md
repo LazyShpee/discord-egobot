@@ -1,4 +1,4 @@
-# Egobot-rw
+# Egobot-rw (In progress, most of this isn't reimplemented')
 
 This is a simple Discord selfbot written in Lua
 This is the rewrite of my original egobot, I decided to restart from scratch to:

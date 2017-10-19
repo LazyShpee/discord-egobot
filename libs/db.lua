@@ -49,7 +49,7 @@ return function(dir)
       end
       index._tables[k] = v
       if type(v) == 'nil' then
-        fs.rmDirSync(index._dir..'/db_'..k..'.lua')
+        fs.unlinkSync(index._dir..'/db_'..k..'.lua')
       end
     end
   })
