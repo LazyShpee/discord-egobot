@@ -26,13 +26,18 @@ local function saveAll(self)
   end
 end
 
+local function exists(self, name)
+  return type(self._tables[name]) == 'table'
+end
+
 return function(dir)
   local index = {
     _dir = dir,
     _tables = {},
     save = save,
     saveAll = saveAll,
-    loadAll = loadAll
+    loadAll = loadAll,
+    exists = exists
   }
   
   local db = setmetatable({}, {
