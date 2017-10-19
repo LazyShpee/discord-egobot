@@ -1,3 +1,5 @@
+local log = require('./libs/log')
+
 --[[
 Structure
   user/
