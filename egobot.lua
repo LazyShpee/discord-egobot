@@ -119,12 +119,12 @@ end)
 
 client:on('messageCreate', function(message)
   if client.user.id ~= message.author.id then return end
-  p('message', message.content)
+  --p('message', message.content)
   if message.content:sub(1, #data.config.prefix) == data.config.prefix then
     modules:exec(message.content:sub(#data.config.prefix + 1), {message = message})
   end
 end)
 
-client:on('warning', function() end)
+--client:on('warning', function() end)
 
 client:run(argv.token or data.config.token)
