@@ -34,6 +34,20 @@ To run Egobot, you will need to get your Discord token (google is your friend, m
 luvit egobot.lua --token DISCORD_TOKEN
 ```
 
+If you wish to run egobot without parameters (in other words, without putting your token everytime), you can modify the default token by doing
+
+```
+luvit egobot.lua -T DISCORD_TOKEN
+```
+
+From now on, you can just run
+
+```
+luvit egobot.lua
+```
+
+And it will use the last saved token, use `--help` for more command line arguments and options
+
 ## Current Features/Modules
 
 Examples will be using the default prefix `//`
@@ -70,7 +84,7 @@ Say (`//s`) has additional operations, root is the `user` folder, those cannot b
 Example:
 ```//s {sb+ae Retarded spongebob aesthetics} normal text {cw sofa trigger machine}```
 
-### Alias
+### Alias **__THIS HAS YET TO BE REIMPLEMENTED__**
 
 `//alias <action> [alias] [value]`
 
@@ -100,18 +114,17 @@ Additional variables:
 
 ### Test
 
-* `//test` - just replies with `Nice test module BRO :ok_hand:`
+* `//test` - just replies with `Nice test module bro :>`
 
 ## TODO (order is arbitrary)
 
 To be done in a near future/upcomming commits
 
-* TODO :>
+* Rewrite aliases
 
 To be done some other time
 
 * Web UI for config and administering
-* Alias backup and restore
 
 ## Author
 
