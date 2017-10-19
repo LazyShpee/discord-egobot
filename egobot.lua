@@ -125,6 +125,6 @@ client:on('messageCreate', function(message)
   end
 end)
 
---client:on('warning', function() end)
+client:on('warning', function() end)
 
 client:run(argv.token or data.config.token)

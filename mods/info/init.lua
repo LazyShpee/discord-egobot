@@ -1,11 +1,12 @@
 local const = require('libs/const')
+
 return {
   name = 'info',
   call = function(self, _, args)
     local embed = {
       author = {
         name = args.message.author.name.."'s selfbot",
-        icon_url = args.message.author:getAvatarURL()
+        icon_url = args.message.author.avatarURL
       },
       description = "Egobot-rw created by [LazyShpee](https://github.com/LazyShpee/)\nhttps://github.com/LazyShpee/discord-egobot/",
       color = 99219,

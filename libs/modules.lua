@@ -1,4 +1,5 @@
 local log = require('./libs/log')
+local fs = require('fs')
 
 --[[
 Structure
@@ -24,7 +25,10 @@ local function loadModule(self, name, save)
   end
 
   if type(name) == "string" then -- Load single module
-    local func, syntax = loadfile(name..'/init.lua')
+    local stat = fs.statSync(name..'/init.lua')
+    if not stat or stat.type == 'directory' then return nil, 'init.lua file not found' end
+    
+    local func, syntax = loadfile(name..'/init.lua', 't', setmetatable({db = self._data}, {__index = _G}))
     if not func and syntax then
       return nil, syntax
     end
