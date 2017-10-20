@@ -66,7 +66,7 @@ local function loadModule(self, name, save)
     for k, v in ipairs(name) do
       local s, e = self:load(v)
       if not s then
-        log(e)
+        log('Module "'..v..'" not loaded:'..e, log.Warning)
       end
     end
     self._data:save("modules")

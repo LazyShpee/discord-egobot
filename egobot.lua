@@ -17,6 +17,7 @@ const = require('libs/const')
   const.db = db
   const.require = require
   const.pp = require('pretty-print')
+  const.enums = discordia.enums
 
 local log = require('./libs/log')
   const.log = log
