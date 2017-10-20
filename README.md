@@ -84,7 +84,7 @@ Say (`//s`) has additional operations, root is the `user` folder, those cannot b
 Example:
 ```//s {sb+ae Retarded spongebob aesthetics} normal text {cw sofa trigger machine}```
 
-### Alias **__THIS HAS YET TO BE REIMPLEMENTED__**
+### Alias
 
 `//alias <action> [alias] [value]`
 
@@ -93,7 +93,7 @@ Actions are one of:
 * `set <alias> <value>` - creates or changes an alias
 * `delete <alias>` - deletes an alias
 * `params <alias> [inline|before|after]` - sets if arguments are passed on, `inline` replaces `%s` by the argument
-* `save` and `reload` - saves and reload aliases to/from config
+* `save` - saves aliases to local storage
 * `list` - Lists aliases
 * `show <alias>` - shows an alias value and its configuration
 

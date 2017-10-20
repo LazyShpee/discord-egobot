@@ -46,7 +46,6 @@ return function(dir)
       if type(index._tables[k]) ~= 'nil' then return index._tables[k] end
     end,
     __newindex = function(s, k, v)
-      p(k, v)
       if type(index[k]) ~= 'nil' then error("Reserved keyword") end
       if not k:find("^[a-zA-Z0-9]+$") then error("Only alphanumerical name are supported") end
       if type(v) ~= 'table' and type(v) ~= 'nil' then
