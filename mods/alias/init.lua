@@ -9,8 +9,15 @@ local aliases = db.aliases
 local bash = require('./libs/parsers').bash
 
 local fmt = {
-  s = function (s) return (s) end
+  s = function (s) return (s) end,
+  i = function (i) return (i:gsub('[^%d]+', '')) end
 }
+
+local fmts = {}
+for i in pairs(fmt) do
+  fmts[#fmts+1]=i
+end
+fmts = table.concat(fmts)
 
 local function aliasHook(message)
   if message.client.user.id ~= message.author.id then return end
@@ -29,7 +36,7 @@ local function aliasHook(message)
             local args = bash(argument)
             args[0] = argument
             local n = 1
-            value = value:gsub('%%%%', '\1'):gsub('%%([0-9]-)([s])', function(_n, f)
+            value = value:gsub('%%%%', '\1'):gsub('%%([0-9]-)(['..fmts..'])', function(_n, f)
               local num = tonumber(_n)
               local s
               if fmt[f] then

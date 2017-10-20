@@ -2,7 +2,8 @@ math.randomseed(os.time())
 
 local discordia = require('discordia')
 local client = discordia.Client{
-  cacheAllMembers = true
+  cacheAllMembers = true,
+  logLevel = discordia.enums.logLevel.error
 }
 
 local db = require('./libs/db')

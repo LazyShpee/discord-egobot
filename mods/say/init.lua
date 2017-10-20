@@ -42,7 +42,7 @@ return {
     if not reply.content:find('^ *$') then
       reply.content = string.char(226, 128, 139)..reply.content
     end
-  
+
     if #files > 0 then
       reply.files = files
     end
