@@ -60,10 +60,14 @@ local function loadModule(self, name, save)
     if self._data.modules[mod.name] == true then
       self:toggle(mod.name, true, true)
     end
-
+    
+    return true
   elseif type(name) == "table" then -- Iterate to call as single module and then save
     for k, v in ipairs(name) do
-      self:load(v)
+      local s, e = self:load(v)
+      if not s then
+        log(e)
+      end
     end
     self._data:save("modules")
   end

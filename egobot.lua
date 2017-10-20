@@ -16,6 +16,7 @@ const = require('libs/const')
   const.getfiles = getfiles
   const.db = db
   const.require = require
+  const.pp = require('pretty-print')
 
 local log = require('./libs/log')
   const.log = log
@@ -71,12 +72,12 @@ end
 
 if argv.cfgToken then
   data.config.token = argv.cfgToken
-  log('Set new token')
+  log('Set new token', log.Info)
 end
 
 if argv.cfgPrefix then
   data.config.prefix = argv.cfgPrefix
-  log('Set new prefix to '..argv.cfgPrefix)
+  log('Set new prefix to '..argv.cfgPrefix, log.Info)
 end
 
 data:save('config')
@@ -97,11 +98,11 @@ end
 local modules = require('./libs/modules')(client, {}, data) -- unused config for now, might get removed
   const.modules = modules
 
-log('Getting ready...')
+log('Getting ready...', log.Info)
 
 modules:load(getdirs('./mods'))
 
-log('Loaded '..#modules..' module(s).')
+log('Loaded '..#modules..' module(s).',log.Info)
 
 --[[
   Client events
@@ -109,12 +110,12 @@ log('Loaded '..#modules..' module(s).')
 
 client:on('ready', function()
   if client.user.bot then
-    print('This is a selfbot, you should be using a discord user account token.')
+    log('This is a selfbot, you should be using a discord user account token.', log.Error)
     client:stop()
     return
   end
-  log('Egobot-rw ready for action o7')
-  log('Logged in as '..client.user.username..'#'..client.user.discriminator..' ('..client.user.id..')')
+  log('Egobot-rw ready for action o7', log.Info)
+  log('Logged in as '..client.user.username..'#'..client.user.discriminator..' ('..client.user.id..')', log.Info)
 end)
 
 client:on('messageCreate', function(message)

@@ -1,4 +1,6 @@
 local emoji = require('./libs/emojis')
+local const = require('libs/const')
+local pp = const.pp
 
 local function printLine(...)
   local ret = {}
@@ -7,6 +9,15 @@ local function printLine(...)
   end
   return table.concat(ret, '\t')
 end
+
+local function prettyLine(...)
+  local ret = {}
+  for _, v in ipairs({...}) do
+    table.insert(ret, tostring(pp.strip(pp.dump(v))))
+  end
+  return table.concat(ret, '\t')
+end
+
 
 local sandbox = {}
 
@@ -50,7 +61,8 @@ return {
     sandbox.channel = args.message.channel
     sandbox.emoji = emoji
     sandbox.print = function(...) local p = printLine(...) table.insert(output, p) end
-    
+    sandbox.p = function(...) local p = prettyLine(...) table.insert(output, p) end
+
     local fn, syntax = load(tf, 'eval', 't', sandbox)
     if not fn then return m:reply('```\n'..syntax..'```') end
     local success, runtime = pcall(fn)
