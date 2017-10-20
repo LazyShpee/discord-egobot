@@ -28,7 +28,7 @@ local function loadModule(self, name, save)
     local stat = fs.statSync(name..'/init.lua')
     if not stat or stat.type == 'directory' then return nil, 'init.lua file not found' end
     
-    local func, syntax = loadfile(name..'/init.lua', 't', setmetatable({db = self._data}, {__index = _G}))
+    local func, syntax = loadfile(name..'/init.lua', 't', setmetatable({db = self._data, client = self._client}, {__index = _G}))
     if not func and syntax then
       return nil, syntax
     end
