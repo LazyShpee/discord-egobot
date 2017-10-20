@@ -100,7 +100,7 @@ local function execModule(self, command, args)
       local status, err = pcall(self._mods[name].call, self._mods[name], argument, args)
       p('command', name, argument)
       if not status then
-        log('Error while calling module "'..name..'": '..err)
+        log('Error while calling module "'..name..'": '..err, log.Error)
       end
     end
   end
