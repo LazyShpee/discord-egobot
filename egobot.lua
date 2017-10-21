@@ -6,6 +6,8 @@ local client = discordia.Client{
   logLevel = discordia.enums.logLevel.error
 }
 
+local mime = require('mime')
+local app = require('weblit-app')
 local db = require('./libs/db')
 local ts = require('./libs/tablesave')
 local getdirs = require('./libs/getdirs')
@@ -122,12 +124,48 @@ end)
 
 client:on('messageCreate', function(message)
   if client.user.id ~= message.author.id then return end
-  --p('message', message.content)
   if message.content:sub(1, #data.config.prefix) == data.config.prefix then
     modules:exec(message.content:sub(#data.config.prefix + 1), {message = message})
   end
 end)
 
---client:on('warning', function() end)
+--[[
+  Web UI Core
+
+app.bind({
+  host = '0.0.0.0',
+  port = 8080
+})
+
+.route({ -- Auth and frontend
+  method = 'GET'
+}, function (req, res, go)
+  
+end)
+
+.route({ -- API Calls
+  method = 'POST'
+}, function (req, res, go)
+
+end)
+
+.start()
+
+--[[]]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 client:run(argv.token or data.config.token)

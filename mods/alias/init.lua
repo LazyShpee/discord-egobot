@@ -107,10 +107,10 @@ return {
     end
   end,
   
-  enable = function(self, client)
+  enable = function(self)
     client:on('messageCreate', aliasHook)
   end,
-  disable = function(self, client)
+  disable = function(self)
     client:removeListener('messageCreate', aliasHook)
   end
 }
