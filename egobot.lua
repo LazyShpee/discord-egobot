@@ -6,8 +6,6 @@ local client = discordia.Client{
   logLevel = discordia.enums.logLevel.error
 }
 
-local mime = require('mime')
-local app = require('weblit-app')
 local db = require('./libs/db')
 local ts = require('./libs/tablesave')
 local getdirs = require('./libs/getdirs')
@@ -27,7 +25,7 @@ local log = require('./libs/log')
 
 local data = db("./data/db")
   const.data = data
-  
+
 if not data:exists('config') then -- Default config
   data.config = {
     prefix = '.'
@@ -96,6 +94,12 @@ if not (argv.token or data.config.token) then
 end
 
 --[[
+  Webui stuff
+]]
+
+--local ui = require('./libs/webui')
+
+--[[
   Module loading
 ]]
 
@@ -128,44 +132,5 @@ client:on('messageCreate', function(message)
     modules:exec(message.content:sub(#data.config.prefix + 1), {message = message})
   end
 end)
-
---[[
-  Web UI Core
-
-app.bind({
-  host = '0.0.0.0',
-  port = 8080
-})
-
-.route({ -- Auth and frontend
-  method = 'GET'
-}, function (req, res, go)
-  
-end)
-
-.route({ -- API Calls
-  method = 'POST'
-}, function (req, res, go)
-
-end)
-
-.start()
-
---[[]]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 client:run(argv.token or data.config.token)

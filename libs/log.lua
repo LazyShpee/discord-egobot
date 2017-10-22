@@ -17,6 +17,6 @@ _M.__call = function (self, m, e, emmiter)
   print(c..'['..e[1]:upper()..']'..os.date('[%y/%m/%d %R] ')..'\27[0m'..tostring(m))
 end
 
-M('Logger active', M.Info, 'self')
+--M('Logger active', M.Info, 'self')
 
 return M
