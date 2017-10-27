@@ -1,5 +1,6 @@
 local emoji = require('./libs/emojis')
 local const = require('libs/const')
+local png = require('./libs/png')
 local pp = const.pp
 
 local function printLine(...)
@@ -59,6 +60,7 @@ return {
     sandbox.client = args.message.client
     sandbox.guild = args.message.guild
     sandbox.channel = args.message.channel
+    sandbox.png = png
     sandbox.emoji = emoji
     sandbox.print = function(...) local p = printLine(...) table.insert(output, p) end
     sandbox.p = function(...) local p = prettyLine(...) table.insert(output, p) end
