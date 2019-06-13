@@ -128,7 +128,7 @@ To be done some other time
 
 ## Author
 
-* ***REMOVED*** [LazyShpee](https://github.com/LazyShpee)
+* [LazyShpee](https://github.com/LazyShpee)
 
 See also the list of [contributors](https://github.com/LazyShpee/discord-egobot/contributors) who participated in this project.
 
